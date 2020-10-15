@@ -4,6 +4,7 @@ const express = require("express");
 const app = express();
 const handlebars = require("express-handlebars");
 const db = require("./db");
+const cookieParser = require("cookie-parser");
 
 const setHandlebars = handlebars.create({
     helpers: {
@@ -16,8 +17,13 @@ const setHandlebars = handlebars.create({
 app.use(express.static("./public"));
 app.engine("handlebars", setHandlebars.engine);
 app.set("view engine", "handlebars");
+app.use(
+    express.urlencoded({
+        extended: false,
+    })
+);
 
-//////////////////////////////////////// routes ////////////////////////////////////////
+//////////////////////////////////////// GET routes ////////////////////////////////////////
 
 // route to root "/" page - redirects to "/petition"
 app.get("/", (req, res) => {
@@ -34,6 +40,41 @@ app.get("/petition", (req, res) => {
     });
 });
 
+// route to "/singed" page
+app.get("/signed", (req, res) => {
+    console.log("get request to /signed page done");
+    // res.send(`<h1>my petition</h1>`);
+    res.render("signed", {
+        layout: "main",
+    });
+});
+
+//inserts signee details into signature table
+app.post("/petition", (req, res) => {
+    const { firstname, lastname, submit } = req.body;
+    if (submit) {
+        db.addSignature(`${firstname}.val()`, `${lastname}.val()`)
+            .then(() => {
+                res.send(`<h1>thanks for signing</h1>`);
+                console.log("sig added");
+            })
+            .catch((err) => {
+                console.log("sig add failed:", err);
+            });
+    }
+});
+
+//from encounter - inserts elements into table when "/<route>" accessed
+// app.post("/add-actor", (req, res) => {
+//     db.addActor("Juliette Binoche", "55")
+//         .then(() => {
+//             console.leg("actor added");
+//         })
+//         .catch((err) => {
+//             console.leg("actor add failed:", err);
+//         });
+// });
+
 ///actors route accesses the actors db and returns rows
 // app.get("/actors", (req, res) => {
 //     db.getActors()
@@ -44,17 +85,6 @@ app.get("/petition", (req, res) => {
 //         })
 //         .catch((err) => {
 //             console.log("err:", err);
-//         });
-// });
-
-//from encounter - inserts elements into table when "/<route>" accessed
-// app.post("/add-actor", (req, res) => {
-//     db.addActor("Juliette Binoche", "55")
-//         .then(() => {
-//             console.leg("actor added");
-//         })
-//         .catch((err) => {
-//             console.leg("actor add failed:", err);
 //         });
 // });
 

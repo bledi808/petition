@@ -6,14 +6,15 @@
         <img src="/assets/hero.jpg">
     </div>
     <div class="form">
-        <form>
-            <div class="name-details">
-                <input type="text" id="firstname" name="firstname" placeholder="type name here..." requiredminlength="1">Name</input>
-                <input type="text" id="surname" name="surname" placeholder="type surname here..."requiredminlength="1">Surname</input>
-            </div>
+        <form method="POST">
+            <h4>Enter your details below</h4>
+            {{!-- <div class="name-details"> --}}
+                <input type="text" id="firstname" name="name" placeholder="First Name" requiredminlength="1"></input>
+                <input type="text" id="surname" name="surname" placeholder="Second Name"requiredminlength="1"></input>
+            {{!-- </div> --}}
             <canvas id="draw-signature">Draw here</canvas>
-            <input type="hidden" id="signature" name="signature" placeholder="sign here...">Signature</input>
-            <button id="submit">Submit</button>
+            <input id="signature" name="signature" placeholder="Signature"></input>
+            <div><button name="submit" id="submit">Submit</button></div>
         </form>
     </div>
 </div>
