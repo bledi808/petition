@@ -9,12 +9,17 @@
         <form method="POST">
             <h4>Enter your details below</h4>
             {{!-- <div class="name-details"> --}}
-                <input type="text" id="firstname" name="name" placeholder="First Name" requiredminlength="1"></input>
-                <input type="text" id="surname" name="surname" placeholder="Second Name"requiredminlength="1"></input>
+                <span>Name</span><input type="text" id="firstname" name="firstname" placeholder="First Name" requiredminlength="1">
+                <span>Surname</span><input type="text" id="surname" name="surname" placeholder="Second Name"requiredminlength="1">
+                <input type="hidden"id="signature" name="signature" placeholder="Signature">
             {{!-- </div> --}}
-            <canvas id="draw-signature">Draw here</canvas>
-            <input id="signature" name="signature" placeholder="Signature"></input>
+            <div id="sign-label">Sign here</div>
+            <canvas id="canvas"></canvas>
+            
             <div><button name="submit" id="submit">Submit</button></div>
         </form>
+        {{#if empty}}
+        <p style="color: blue">please ensure you have filled in all fields </p>  
+        {{/if}}
     </div>
 </div>

@@ -1,21 +1,32 @@
 // where our db queries live
 
 var spicedPg = require("spiced-pg"); // middleman or client
-var db = spicedPg("postgres:postgres:postgres@localhost:5432/actors-exercise"); // port 5432 is the standard db port
+var db = spicedPg("postgres:postgres:postgres@localhost:5432/petition"); // port 5432 is the standard db port
 
-//exposed function to add signees details to the signatures database; add signature later
-module.exports.addSignature = (firstname, lastname) => {
+//INSERT submitted signee details to the signatures database; add signature later
+module.exports.addSignature = (firstname, lastname, signature) => {
+    // console.log(firstname, lastname, signature);
     return db.query(
         `
-    INSERT INTO signatures (first, last)
-    VALUES($1,$2)
+        INSERT INTO signatures (first, last, signature)
+        VALUES ($1, $2, $3)
+        RETURNING *
     `,
-        [firstname, lastname]
+        [firstname, lastname, signature]
     );
 };
 
+//SELECT to get count of signed up users
+module.exports.countSignatures = () => {
+    return db.query(`SELECT count(*) FROM signatures`);
+};
+
+//SELECT to get name and surname of signed up users
 module.exports.getSigners = () => {
     return db.query(`SELECT * FROM signatures`);
+};
+module.exports.getCurrentSigner = (cookie) => {
+    return db.query(`SELECT * FROM signatures WHERE id = ${cookie}`);
 };
 
 // db is an object that has a method db.query that allows us to query the db
