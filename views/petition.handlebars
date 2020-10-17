@@ -1,25 +1,24 @@
 
 <div class="container">
-    
-    <h1 id="petition-header">I really care about this issue and so should you!!!</h1>
+    <h1 class="petition-header">I really care about this issue and so should you!!!</h1>
     <div class="hero-container">
         <img src="/assets/hero.jpg">
     </div>
     <div class="form">
         <form method="POST">
-            <h4>Enter your details below</h4>
+            <h4 style="margin-bottom:1%">Enter your details below</h4>
             {{!-- <div class="name-details"> --}}
-                <span>Name</span><input type="text" id="firstname" name="firstname" placeholder="First Name" requiredminlength="1">
-                <span>Surname</span><input type="text" id="surname" name="surname" placeholder="Second Name"requiredminlength="1">
-                <input type="hidden"id="signature" name="signature" placeholder="Signature">
+                <span>Name</span></br><input type="text" id="firstname" name="firstname" placeholder="First Name" style="margin:1% 0">
+                <span></br>Surname</span></br><input type="text" id="surname" name="surname" placeholder="Second Name" style="margin:1% 0">
+                <span></br>Signature</span></br></span><input id="signature" name="signature" placeholder="Signature" style="margin:1% 0">
             {{!-- </div> --}}
-            <div id="sign-label">Sign here</div>
-            <canvas id="canvas"></canvas>
+            {{!-- <div id="sign-label" style="text-size:small"></div> --}}
+            <canvas id="canvas" style="margin:1% 0"></canvas>
             
             <div><button name="submit" id="submit">Submit</button></div>
         </form>
         {{#if empty}}
-        <p style="color: blue">please ensure you have filled in all fields </p>  
+        <p style="color: blue; margin-top:1%">Please ensure you have filled in all fields! </p>  
         {{/if}}
     </div>
 </div>

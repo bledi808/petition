@@ -1,13 +1,11 @@
 // where our routes live
+//////////////////////////////////////// DECLARATIONS ////////////////////////////////////////
 
 const express = require("express");
 const app = express();
 const handlebars = require("express-handlebars");
 const db = require("./db");
 const cookieSession = require("cookie-session");
-// const { JSDOM } = require("jsdom");
-// const { window } = new JSDOM("");
-// const $ = require("jquery")(window);
 const setHandlebars = handlebars.create({
     helpers: {
         globalHello() {
@@ -15,8 +13,8 @@ const setHandlebars = handlebars.create({
         },
     },
 });
-//////////////////////////////////////// middleware ////////////////////////////////////////
 
+//////////////////////////////////////// MIDDLEWARE ////////////////////////////////////////
 app.use(
     cookieSession({
         secret: "I'm always angry.",
@@ -36,31 +34,14 @@ app.use(
 
 // GET request to root "/" route - redirects to "/petition"
 app.get("/", (req, res) => {
-    // console.log("get request to '/' root page done");
-    //cookie session code
-    // console.log("req.session when first set:", req.session);
-    // req.session.pimento = "new session value";
-    // console.log("req.session after modification:", req.session);
-    //cookie code ended
     res.redirect("/petition");
 });
 
 // GET request to "/petition" route
 app.get("/petition", (req, res) => {
-    // console.log("get request to /petition page done");
-    //below code only grants access to the page if user has pimento cookie is set - from encounter; modify
-    // const {pimento} = req.session;
-    // if (pimento) {
-    //     res.render("petition", {
-    //         layout: "main",
-    //     });
-    // } else {
-    //     res.send(`<h1>Permisision denied</h1>`);
-    // }
-    // res.send(`<h1>my petition</h1>`);
+    //if signed session "cookie" exists, redirect the user to the signed paged
     const { signed } = req.session;
     if (signed) {
-        //if already signed up and cookie "cookie" exists, redirect the user to the signed paged
         res.redirect("/signed");
     } else {
         res.render("petition", {
@@ -69,35 +50,31 @@ app.get("/petition", (req, res) => {
     }
 });
 
-//POST request on "/petition" route: inserts signee details into signature table
+//POST request on "/petition" route: inserts signee details into signatures table
 app.post("/petition", (req, res) => {
     const { firstname, surname, signature } = req.body;
-    if (firstname !== "" && surname !== "" && signature !== "") {
+    //if submission successful, set a cookie and redirect user to signed page
+    if (firstname !== "" && surname !== "") {
         db.addSignature(firstname, surname, signature)
             .then((results) => {
-                //if submission successful, set a cookie and redirect user to signed page
                 // console.log("results:", results);
-                console.log("req.session before:", req.session);
                 req.session.signed = results.rows[0].id;
-                console.log("req.session after first set:", req.session);
                 res.redirect("/signed");
             })
             .catch((err) => {
                 console.log("error with addSignature", err);
             });
     } else {
-        //re-render petition page with error - CHANGE THIS LATER, for now...
         res.render("petition", {
-            empty: true,
+            empty: true, // conditional rendering to display "empty input fields" error message
         });
     }
 });
 
 // GET request to the "/singed" route
 app.get("/signed", (req, res) => {
-    // console.log("get request to /signed page done");
+    //if cookie set, countSignatures and render the row count and the current signer name in "/signed"
     const { signed } = req.session;
-
     if (signed) {
         db.countSignatures().then((arg) => {
             const count = arg.rows[0].count;
@@ -116,7 +93,7 @@ app.get("/signed", (req, res) => {
 
 // GET request to the "/singers" route
 app.get("/signers", (req, res) => {
-    console.log("get request to /signed page done");
+    //if cookie set, get all names of signers and and render in "/signers"
     const { signed } = req.session;
     if (signed) {
         db.getSigners().then(({ rows }) => {
@@ -129,19 +106,7 @@ app.get("/signers", (req, res) => {
     }
 });
 
-///actors route accesses the actors db and returns rows
-// app.get("/actors", (req, res) => {
-//     db.getActors()
-//         .then(({ rows }) => {
-//             console.log("results from getActors:", rows);
-//             // .then((results) => {
-//             //     console.log("results from getActors:", results);
-//         })
-//         .catch((err) => {
-//             console.log("err:", err);
-//         });
-// });
-
+//////////////////////////////////////// PORT LISTENER ////////////////////////////////////////
 app.listen(8080, () =>
     console.log(
         "<><><><><><><><><><><><><><><>| petition listenting |<><><><><><><><><><><><><><><>"

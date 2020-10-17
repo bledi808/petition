@@ -1,9 +1,8 @@
-
-
-
-<div class="signed">
+<div class="container">
     {{#rows}}
-    <h2>thank you {{first}} for signing</h3>
+    <h2 id="thankyou" style="margin-top: 20%;">Thank you for your support <a style="color: tomato">{{first}}</a>!</h2>
     {{/rows}}
-    <h3> so far {{count}} other people also care about this issue<h3>  
+    <h1 style="margin-top: 0%;font-size:50px; color: blue">{{count}} </h1>
+    <h3 style="margin-top: 0;">other people care about this issue.<h3>  
+    <a href="/signers" style="text-decoration:none"><h4 style="margin-top: 0; background-color: seagreen; padding:1% 2%;color:white; width:220px">See who else signed up<h4></a>
 </div>
