@@ -154,13 +154,18 @@ app.get("/petition", (req, res) => {
 
 //POST request on "/petition" route: inserts signee details into signatures table
 app.post("/petition", (req, res) => {
-    const { firstname, surname, signature } = req.body;
+    const { signature } = req.body;
+    const { userId } = req.session;
+
     //if submission successful, set a cookie and redirect user to signed page
-    if (firstname !== "" && surname !== "") {
-        db.addSignature(firstname, surname, signature)
+    if (signature !== "") {
+        db.addSignature(signature, userId)
             .then((results) => {
                 // console.log("results:", results);
                 req.session.signed = results.rows[0].id;
+                console.log("results", results);
+                console.log("results row", results.rows[0]);
+                console.log("signed cookie", req.session);
                 res.redirect("/signed");
             })
             .catch((err) => {

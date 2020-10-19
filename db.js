@@ -5,15 +5,15 @@ var db = spicedPg("postgres:postgres:postgres@localhost:5432/petition"); // port
 //////////////////////////////////////// signatures table queries ////////////////////////////////////////
 
 //INSERT submitted signee details to the signatures database; add signature later
-module.exports.addSignature = (firstname, lastname, signature) => {
-    // console.log(firstname, lastname, signature);
+module.exports.addSignature = (user_id, signature) => {
+    // console.log(user_id, signature);
     return db.query(
         `
-        INSERT INTO signatures (first, last, signature)
-        VALUES ($1, $2, $3)
+        INSERT INTO signatures (user_id, signature)
+        VALUES ($1, $2)
         RETURNING *
     `,
-        [firstname, lastname, signature]
+        [user_id, signature]
     );
 };
 
@@ -26,23 +26,16 @@ module.exports.countSignatures = () => {
 module.exports.getSigners = () => {
     return db.query(`SELECT * FROM signatures`);
 };
-module.exports.getCurrentSigner = (cookie) => {
-    return db.query(`SELECT * FROM signatures WHERE id = ${cookie}`);
+
+module.exports.getCurrentSigner = (user_id) => {
+    return db.query(`SELECT * FROM signatures WHERE id=$1`, [user_id]);
 };
 
-// db is an object that has a method db.query that allows us to query the db
-// db.query("SELECT * FROM actors")
-//     .then(function (result) {
-//         console.log(result.rows[2]);
-//     })
-//     .catch(function (err) {
-//         console.log(err);
-//     });
+module.exports.getSignature; // finish writing this
 
 //////////////////////////////////////// users table queries ////////////////////////////////////////
 
 //INSERT submitted signee details to the signatures database; add signature later
-
 module.exports.addUser = (firstname, lastname, email, password) => {
     // console.log(firstname, lastname, signature);
     return db.query(
