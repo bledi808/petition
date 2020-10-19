@@ -33,18 +33,15 @@ canvas.on("mousedown", (e) => {
         // console.log("yy:", y);
         ctx.lineTo(x, y);
         ctx.stroke();
-        ctx.strokeStyle = "tomato";
-        ctx.lineWidth = 5;
+        ctx.strokeStyle = "blue";
+        ctx.lineWidth = 2;
         canvas.on("mouseup", function () {
             canvas.off("mousemove", drawSig);
         });
     });
 });
 
-// set the value of the hidden signature input field to canvas signature
-
+// upon clicking Submit, set value of the hidden sig input field to canvas drawing
 submitButton.on("click", () => {
-    const canvasSig = canvas[0].toDataURL();
-    console.log(canvasSig);
-    signatureInput.val(canvasSig);
+    signatureInput.val(canvas[0].toDataURL());
 });

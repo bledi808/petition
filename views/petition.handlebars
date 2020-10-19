@@ -3,23 +3,28 @@
     <h1 class="petition-header">I really care about this issue and so should you!!!</h1>
     <div class="hero-container">
         <img src="/assets/hero.jpg">
+        {{!-- <iframe id="iframe" width="100%" height="100%" src="https://en.wikipedia.org wiki/Crocs">
+        </iframe> --}}
     </div>
     <div class="form">
         <form method="POST">
             <h4 style="margin-bottom:1%">Enter your details below</h4>
-            {{!-- <div class="name-details"> --}}
-                <span>Name</span></br><input type="text" id="firstname" name="firstname" placeholder="First Name" style="margin:1% 0">
-                <span></br>Surname</span></br><input type="text" id="surname" name="surname" placeholder="Second Name" style="margin:1% 0">
-                <input type="hidden" id="signature" name="signature" style="margin:1% 0">
-            {{!-- </div> --}}
-            {{!-- <div id="sign-label" style="text-size:small"></div> --}}
-            <span></br>Signature</span></br>
-            <canvas id="canvas" style="margin:1% 0"></canvas>
-            
+                <div class="form-layout">   
+                <div class="input-fields">
+                    <span>Name</span></br><input type="text" id="firstname" name="firstname" placeholder="type name..." style="margin:1% 0">
+                    <span></br>Surname</span></br><input type="text" id="surname" name="surname" placeholder="type surame..." style="margin:1% 0">
+                    <input type="hidden" id="signature" name="signature" style="margin:1% 0">
+                </div>
+                <div class="input-canvas">
+                    <span>Signature</span></br>
+                    <canvas id="canvas" style="margin:1% 0"></canvas>
+                </div>
+                </div>
+                <input type="hidden" name="_csrf" value="{{csrfToken}}">
             <div><button name="submit" id="submit">Submit</button></div>
         </form>
         {{#if empty}}
-        <p style="color: blue; margin-top:1%">Please ensure you have filled in all fields! </p>  
+        <p style="color: tomato; margin-top:1%">Please ensure you have filled in all fields! </p>  
         {{/if}}
     </div>
 </div>

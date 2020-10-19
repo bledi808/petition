@@ -6,6 +6,7 @@ const app = express();
 const handlebars = require("express-handlebars");
 const db = require("./db");
 const cookieSession = require("cookie-session");
+const csurf = require("csurf");
 const setHandlebars = handlebars.create({
     helpers: {
         globalHello() {
@@ -13,6 +14,7 @@ const setHandlebars = handlebars.create({
         },
     },
 });
+const { hash, compare } = require("./bc");
 
 //////////////////////////////////////// MIDDLEWARE ////////////////////////////////////////
 app.use(
@@ -29,8 +31,54 @@ app.use(
         extended: false,
     })
 );
+app.use(csurf());
+app.use(function (req, res, next) {
+    res.locals.csrfToken = req.csrfToken();
+    res.set("x-frame-options", "DENY");
+    next();
+});
 
-//////////////////////////////////////// ROUTES ////////////////////////////////////////
+//////////////////////////////////////// ROUTES ///////////////////////////////////////
+app.post("/register", (req, res) => {
+    //res.render(registration page)
+});
+
+app.post("/register", (req, res) => {
+    // use when a user registers, all we need is use what a user wants their pw to be
+    //i.e. req.body.password => the name attibute decides what property name you will use when accessing this info server side.
+    //for demo purposes we hardcode the userinput below
+    hash("userInpt")
+        .then((hashedPw) => {
+            // store the user's hash password and all other user info in datanase
+            //for demo we jsut log it
+            console.log("hashedPw in /register".hashedPw);
+        })
+        .catch((err) => {
+            console.log("error in POST register hash", err);
+            //if smth goes wrog, rerender /register with an error msg otherwise redirect the user to /petition
+        });
+});
+
+app.post("/login", (req, res) => {
+    //res.render(login page)
+});
+
+app.post("/login", (req, res) => {
+    // here we want to compare whether the pw the user types matchs the pw stored in db
+    // go to db, check if email address provided by user exists and if so SELECT the user's stored password hash
+    // for DEMO we hardcode this
+
+    const demoHash = "whatever";
+    compare("userInput", demoHash)
+        .then((match) => {
+            console.log("clear text pw matches the hash?", match);
+            //if pw matches, we cab set a cookie to the user's id. if not, we need to rerender /login with an error msg
+        })
+        .catch((err) => {
+            console.log("error in POST /login compare", err);
+            // we need to rerender /login with err msg
+        });
+});
 
 // GET request to root "/" route - redirects to "/petition"
 app.get("/", (req, res) => {
