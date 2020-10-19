@@ -40,54 +40,80 @@ app.use(function (req, res, next) {
 
 //////////////////////////////////////// ROUTES ///////////////////////////////////////
 app.get("/register", (req, res) => {
-    res.render("register", {
-        layout: "main",
-    });
-    // .catch((err) => {
-    //     console.log("smth went wrong with /register POST", err);
-    // });
+    res.render("register", {});
 });
 
 app.post("/register", (req, res) => {
-    // use when a user registers, all we need is use what a user wants their pw to be
-    //i.e. req.body.password => the name attibute decides what property name you will use when accessing this info server side.
-    //for demo purposes we hardcode the userinput below
-    hash("userInpt")
-        .then((hashedPw) => {
-            // store the user's hash password and all other user info in datanase
-            //for demo we jsut log it
-            console.log("hashedPw in /register".hashedPw);
-        })
-        .catch((err) => {
-            console.log("error in POST register hash", err);
-            //if smth goes wrog, rerender /register with an error msg otherwise redirect the user to /petition
+    // use hash when a user registers, all we need is what a user wants their pw to be
+    const { firstname, surname, email, password } = req.body;
+    console.log("req.body:", req.body);
+    if (firstname !== "" && surname !== "" && email !== "" && password !== "") {
+        hash(password)
+            .then((hashedPw) => {
+                console.log("hashedPw in /register", hashedPw);
+                db.addUser(firstname, surname, email, hashedPw)
+                    .then((results) => {
+                        req.session.userId = results.rows[0].id;
+                        // console.log("cookie after:", req.session);
+                        res.redirect("/petition"); // maybe reroute to /login ; decide on flow later
+                    })
+                    .catch((err) => {
+                        console.log("error with storing user info", err);
+                        res.render("register", {
+                            empty: true, // rerender with error msg /make error msgs more specific to error later
+                        });
+                    });
+            })
+            .catch((err) => {
+                console.log("error with storing user credentials", err);
+                res.render("register", {
+                    empty: true, //make error msgs more specific to error later
+                });
+            });
+    } else {
+        res.render("register", {
+            empty: true, // make error msgs more specific to error later
         });
+    }
 });
 
 app.get("/login", (req, res) => {
     res.render("login", {
         layout: "main",
     });
-    // .catch((err) => {
-    //     console.log("smth went wrong with /login POST", err);
-    // });
 });
 
 app.post("/login", (req, res) => {
-    // here we want to compare whether the pw the user types matchs the pw stored in db
-    // go to db, check if email address provided by user exists and if so SELECT the user's stored password hash
-    // for DEMO we hardcode this
+    const { email, password } = req.body; // user inputed email and password
+    const hashedPw = db.getPassword(email); // stored hashedPw
 
-    const demoHash = "whatever";
-    compare("userInput", demoHash)
+    compare(password, hashedPw)
         .then((match) => {
             console.log("clear text pw matches the hash?", match);
-            //if pw matches, we cab set a cookie to the user's id. if not, we need to rerender /login with an error msg
+            //if pw matches, we can set a cookie to the user's id.
+            //if not, we need to rerender /login with an error msg
         })
         .catch((err) => {
             console.log("error in POST /login compare", err);
             // we need to rerender /login with err msg
         });
+
+    // db.getPassword(email).then((hashedPw) => {
+    //     compare(password, hashedPw)
+    //         .then((match) => {
+    //             console.log("clear text pw matches the hash?", match);
+    //             //if pw matches, we can set a cookie to the user's id.
+    //             //if not, we need to rerender /login with an error msg
+    //         })
+    //         .catch((err) => {
+    //             console.log("error in POST /login compare", err);
+    //             // we need to rerender /login with err msg
+    //         })
+    //         .catch((err) => {
+    //             console.log("error in POST /login compare", err);
+    //             // we need to rerender /login with err msg
+    //         });
+    // });
 });
 
 // GET request to root "/" route - redirects to "/petition"

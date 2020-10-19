@@ -8,7 +8,10 @@
                     <span></br>Password</span></br>
                         <input type="text" id="surname" name="surname" placeholder="type password..." style="margin:1% 0">
                 <input type="hidden" name="_csrf" value="{{csrfToken}}">
-            <div><button name="submit" id="submit">Log in</button></div>     
+            <div><button name="submit" id="submit">Log in</button></div>
+            <h4 style="margin-top: 5%; color:black; width:250px">
+            If you don't have an account yet, register <a href="/register" style="text-decoration: none; color: blue">here</a>!
+            <h4>         
         </form>
         {{#if empty}}
         <p style="color: tomato; margin-top:1%">These credentials appear incorrect!</p>  

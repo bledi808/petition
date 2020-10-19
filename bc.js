@@ -8,7 +8,7 @@ compare = promisify(compare);
 
 module.exports.compare = compare;
 module.exports.hash = (plainTxtPw) =>
-    genSalt().then((salt) => hash(plainTxtPw));
+    genSalt().then((salt) => hash(plainTxtPw, salt));
 
 // DEMO of how this exported functions above work
 // genSalt()
