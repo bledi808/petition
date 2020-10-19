@@ -31,16 +31,21 @@ app.use(
         extended: false,
     })
 );
-app.use(csurf());
-app.use(function (req, res, next) {
-    res.locals.csrfToken = req.csrfToken();
-    res.set("x-frame-options", "DENY");
-    next();
-});
+// app.use(csurf());
+// app.use(function (req, res, next) {
+//     res.locals.csrfToken = req.csrfToken();
+//     res.set("x-frame-options", "DENY");
+//     next();
+// });
 
 //////////////////////////////////////// ROUTES ///////////////////////////////////////
 app.get("/register", (req, res) => {
-    res.render("register", {});
+    const { userId } = req.session;
+    if (userId) {
+        res.redirect("petition");
+    } else {
+        res.render("register", {});
+    }
 });
 
 app.post("/register", (req, res) => {
@@ -78,42 +83,55 @@ app.post("/register", (req, res) => {
 });
 
 app.get("/login", (req, res) => {
-    res.render("login", {
-        layout: "main",
-    });
+    const { userId } = req.session;
+    if (userId) {
+        res.redirect("petition");
+    } else {
+        res.render("login", {});
+    }
 });
 
 app.post("/login", (req, res) => {
-    const { email, password } = req.body; // user inputed email and password
-    const hashedPw = db.getPassword(email); // stored hashedPw
+    const { email, password } = req.body; // user-entered email and password
+    console.log("user-email:", email);
+    console.log("user-pw:", password);
 
-    compare(password, hashedPw)
-        .then((match) => {
-            console.log("clear text pw matches the hash?", match);
-            //if pw matches, we can set a cookie to the user's id.
-            //if not, we need to rerender /login with an error msg
-        })
-        .catch((err) => {
-            console.log("error in POST /login compare", err);
-            // we need to rerender /login with err msg
+    if (email !== "" && password !== "") {
+        db.getPassword(email).then((results) => {
+            console.log("results", results.rows[0]);
+            let hashedPw = results.rows[0].password;
+            console.log("hashedPw: ", hashedPw);
+            compare(password, hashedPw)
+                .then((match) => {
+                    console.log("userPw matches hashedPw?", match);
+                    // console.log("cookie after login:", req.session);
+                    if (match) {
+                        req.session.userId = results.rows[0].id;
+                        res.render("petition", {});
+                    } else {
+                        res.render("login", {
+                            empty: true, // make error msgs more specific to error later
+                        });
+                    }
+                })
+                .catch((err) => {
+                    console.log("error in POST /login compare", err);
+                    res.render("login", {
+                        empty: true, // make error msgs more specific to error later
+                    });
+                })
+                .catch((err) => {
+                    console.log("error in POST /login getPassword()", err);
+                    res.render("login", {
+                        empty: true, // make error msgs more specific to error later
+                    });
+                });
         });
-
-    // db.getPassword(email).then((hashedPw) => {
-    //     compare(password, hashedPw)
-    //         .then((match) => {
-    //             console.log("clear text pw matches the hash?", match);
-    //             //if pw matches, we can set a cookie to the user's id.
-    //             //if not, we need to rerender /login with an error msg
-    //         })
-    //         .catch((err) => {
-    //             console.log("error in POST /login compare", err);
-    //             // we need to rerender /login with err msg
-    //         })
-    //         .catch((err) => {
-    //             console.log("error in POST /login compare", err);
-    //             // we need to rerender /login with err msg
-    //         });
-    // });
+    } else {
+        res.render("login", {
+            empty: true, // make error msgs more specific to error later
+        });
+    }
 });
 
 // GET request to root "/" route - redirects to "/petition"

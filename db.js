@@ -43,19 +43,19 @@ module.exports.getCurrentSigner = (cookie) => {
 
 //INSERT submitted signee details to the signatures database; add signature later
 
-module.exports.addUser = (firstname, lastname, email, password, created) => {
+module.exports.addUser = (firstname, lastname, email, password) => {
     // console.log(firstname, lastname, signature);
     return db.query(
         `
-        INSERT INTO users (first, last, email, password, created_at)
-        VALUES ($1, $2, $3, $4, $5)
+        INSERT INTO users (first, last, email, password)
+        VALUES ($1, $2, $3, $4)
         RETURNING *
     `,
-        [firstname, lastname, email, password, created]
+        [firstname, lastname, email, password]
     );
 };
 
 // SELECT to get user info by email address (in post /login)
-module.exports.getPassword = (email) => {
-    return db.query(`SELECT password FROM users WHERE email=${email}`);
+module.exports.getPassword = (arg) => {
+    return db.query(`SELECT * FROM users WHERE email=$1`, [arg]);
 };
