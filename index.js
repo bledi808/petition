@@ -39,8 +39,13 @@ app.use(function (req, res, next) {
 });
 
 //////////////////////////////////////// ROUTES ///////////////////////////////////////
-app.post("/register", (req, res) => {
-    //res.render(registration page)
+app.get("/register", (req, res) => {
+    res.render("register", {
+        layout: "main",
+    });
+    // .catch((err) => {
+    //     console.log("smth went wrong with /register POST", err);
+    // });
 });
 
 app.post("/register", (req, res) => {
@@ -59,8 +64,13 @@ app.post("/register", (req, res) => {
         });
 });
 
-app.post("/login", (req, res) => {
-    //res.render(login page)
+app.get("/login", (req, res) => {
+    res.render("login", {
+        layout: "main",
+    });
+    // .catch((err) => {
+    //     console.log("smth went wrong with /login POST", err);
+    // });
 });
 
 app.post("/login", (req, res) => {
