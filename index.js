@@ -39,6 +39,8 @@ app.use(
 // });
 
 //////////////////////////////////////// ROUTES ///////////////////////////////////////
+
+// GET request to "/register" route
 app.get("/register", (req, res) => {
     const { userId } = req.session;
     if (userId) {
@@ -48,32 +50,53 @@ app.get("/register", (req, res) => {
     }
 });
 
+// POST request to "/register" route
 app.post("/register", (req, res) => {
     // use hash when a user registers, all we need is what a user wants their pw to be
     const { firstname, surname, email, password } = req.body;
-    console.log("req.body:", req.body);
+    // console.log("req.body:", req.body);
     if (firstname !== "" && surname !== "" && email !== "" && password !== "") {
-        hash(password)
-            .then((hashedPw) => {
-                console.log("hashedPw in /register", hashedPw);
-                db.addUser(firstname, surname, email, hashedPw)
-                    .then((results) => {
-                        req.session.userId = results.rows[0].id;
-                        // console.log("cookie after:", req.session);
-                        res.redirect("/petition"); // maybe reroute to /login ; decide on flow later
-                    })
-                    .catch((err) => {
-                        console.log("error with storing user info", err);
-                        res.render("register", {
-                            empty: true, // rerender with error msg /make error msgs more specific to error later
+        db.getPassword(email)
+            .then((results) => {
+                // console.log("results", results);
+                if (results.rows.length === 0) {
+                    hash(password)
+                        .then((hashedPw) => {
+                            // console.log("hashedPw in /register", hashedPw);
+                            db.addUser(firstname, surname, email, hashedPw)
+                                .then((results) => {
+                                    req.session.userId = results.rows[0].id;
+                                    // console.log("cookie after:", req.session);
+                                    res.redirect("/profile"); // maybe reroute to /login ; decide on flow later
+                                })
+                                .catch((err) => {
+                                    console.log(
+                                        "error with storing user info",
+                                        err
+                                    );
+                                    res.render("register", {
+                                        empty: true, // rerender with error msg /make error msgs more specific to error later
+                                    });
+                                });
+                        })
+                        .catch((err) => {
+                            console.log(
+                                "error with storing user credentials",
+                                err
+                            );
+                            res.render("register", {
+                                empty: true, //make error msgs more specific to error later
+                            });
                         });
+                } else {
+                    console.log("EMAIL ALREADY IN USE");
+                    res.render("register", {
+                        empty: true, // make error msgs more specific to error later/EMAIL IS ALREADY TAKEN/USED
                     });
+                }
             })
             .catch((err) => {
-                console.log("error with storing user credentials", err);
-                res.render("register", {
-                    empty: true, //make error msgs more specific to error later
-                });
+                console.log("erro in getPassword()", err);
             });
     } else {
         res.render("register", {
@@ -82,6 +105,41 @@ app.post("/register", (req, res) => {
     }
 });
 
+// GET request to "/profile" route
+app.get("/profile", (req, res) => {
+    const { userId, profileCreated } = req.session;
+    console.log("userId:", userId);
+    console.log("profileCreated:", profileCreated);
+
+    if (userId) {
+        if (profileCreated) {
+            res.redirect("/petition");
+        } else {
+            res.render("profile", {});
+        }
+    } else {
+        res.redirect("/register");
+    }
+});
+
+// POST request to "/profile" route
+app.post("/profile", (req, res) => {
+    const { userId } = req.session;
+    const { age, city, url } = req.body;
+
+    db.addProfile(age, city, url, userId)
+        .then((results) => {
+            console.log("results form POST /profile", results.rows[0]);
+            req.session.profileCreated = true;
+            res.redirect("/petition");
+        })
+        .catch((err) => {
+            console.log("error with addProfile()", err);
+            res.render("profile", {});
+        });
+});
+
+// GET request to "/login" route
 app.get("/login", (req, res) => {
     const { userId } = req.session;
     if (userId) {
@@ -91,6 +149,7 @@ app.get("/login", (req, res) => {
     }
 });
 
+//POST request to "/login" route
 app.post("/login", (req, res) => {
     const { email, password } = req.body; // user-entered email and password
     console.log("user-email:", email);
@@ -107,7 +166,7 @@ app.post("/login", (req, res) => {
                     // console.log("cookie after login:", req.session);
                     if (match) {
                         req.session.userId = results.rows[0].id;
-                        res.render("petition", {});
+                        res.redirect("/petition");
                     } else {
                         res.render("login", {
                             empty: true, // make error msgs more specific to error later
@@ -134,35 +193,44 @@ app.post("/login", (req, res) => {
     }
 });
 
-// GET request to root "/" route - redirects to "/petition"
+// GET request to root "/" route - redirects to "/register"
 app.get("/", (req, res) => {
-    res.redirect("/petition");
+    res.redirect("/register");
 });
 
 // GET request to "/petition" route
 app.get("/petition", (req, res) => {
     //if signed session "cookie" exists, redirect the user to the signed paged
-    const { signed } = req.session;
-    if (signed) {
-        res.redirect("/signed");
-    } else {
-        res.render("petition", {
-            layout: "main",
+    const { userId, signed } = req.session;
+    console.log("req.session at /petition:", req.session);
+    if (userId) {
+        db.showSignature(userId).then((arg) => {
+            if (arg.rows.length != 0) {
+                req.session.signed = true;
+                res.redirect("/signed");
+            } else {
+                res.render("petition", {});
+            }
         });
+    } else {
+        res.redirect("/register");
     }
 });
 
-//POST request on "/petition" route: inserts signee details into signatures table
+//POST request on "/petition" route: inserts signature into signatures table
 app.post("/petition", (req, res) => {
     const { signature } = req.body;
     const { userId } = req.session;
+    // console.log("req.body:", req.body);
+    // console.log("req.session:", req.session);
 
     //if submission successful, set a cookie and redirect user to signed page
     if (signature !== "") {
-        db.addSignature(signature, userId)
+        db.addSignature(userId, signature)
             .then((results) => {
                 // console.log("results:", results);
-                req.session.signed = results.rows[0].id;
+                req.session.signed = true;
+
                 console.log("results", results);
                 console.log("results row", results.rows[0]);
                 console.log("signed cookie", req.session);
@@ -181,15 +249,20 @@ app.post("/petition", (req, res) => {
 // GET request to the "/singed" route
 app.get("/signed", (req, res) => {
     //if cookie set, countSignatures and render the row count and the current signer name in "/signed"
-    const { signed } = req.session;
+    const { userId, signed } = req.session;
+    console.log("signed cookie at /signed: ", signed);
     if (signed) {
         db.countSignatures().then((arg) => {
             const count = arg.rows[0].count;
-            db.getCurrentSigner(signed).then(({ rows }) => {
-                console.log("rows:", rows);
-                res.render("signed", {
-                    rows,
-                    count,
+            db.showSignature(userId).then((arg) => {
+                const signature = arg.rows[0].signature;
+                db.getCurrentSigner(userId).then(({ rows }) => {
+                    // console.log("rows:", rows);
+                    res.render("signed", {
+                        rows,
+                        signature,
+                        count,
+                    });
                 });
             });
         });
@@ -201,13 +274,19 @@ app.get("/signed", (req, res) => {
 // GET request to the "/singers" route
 app.get("/signers", (req, res) => {
     //if cookie set, get all names of signers and and render in "/signers"
-    const { signed } = req.session;
+    const { userId, signed } = req.session;
+
     if (signed) {
-        db.getSigners().then(({ rows }) => {
-            res.render("signers", {
-                rows,
+        db.getSigners()
+            .then(({ rows }) => {
+                console.log("rows: ", rows);
+                res.render("signers", {
+                    rows,
+                });
+            })
+            .catch((err) => {
+                console.log("error with getSigners():", err);
             });
-        });
     } else {
         res.redirect("/petition");
     }

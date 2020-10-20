@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS signatures;
+DROP TABLE IF EXISTS signatures CASCADE;
 
 CREATE TABLE signatures (
      id SERIAL PRIMARY KEY,

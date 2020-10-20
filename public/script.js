@@ -17,7 +17,7 @@ const signatureInput = $("#signature");
 
 canvas.on("mousedown", (e) => {
     let x = e.clientX - canvas.offset().left;
-    let y = e.clientY - canvas.offset().top + 15;
+    let y = e.clientY - canvas.offset().top;
     // console.log("x:", x);
     // console.log("y:", y);
     canvas.css({
@@ -28,7 +28,7 @@ canvas.on("mousedown", (e) => {
 
     canvas.on("mousemove", function drawSig(e) {
         let x = e.clientX - canvas.offset().left;
-        let y = e.clientY - canvas.offset().top + 15;
+        let y = e.clientY - canvas.offset().top;
         // console.log("xx:", x);
         // console.log("yy:", y);
         ctx.lineTo(x, y);

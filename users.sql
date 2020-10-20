@@ -1,7 +1,6 @@
- DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS users CASCADE;
 
- 
- CREATE TABLE users(
+CREATE TABLE users(
       id SERIAL PRIMARY KEY,
       first VARCHAR(255) NOT NULL,
       last VARCHAR(255) NOT NULL,
@@ -11,4 +10,3 @@
       )
 
 
--- new users table 
