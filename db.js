@@ -115,7 +115,7 @@ module.exports.updateUsersNoPw = (firstname, lastname, email, userId) => {
         WHERE id = $4
         RETURNING *
 
-    `,
+        `,
         [firstname, lastname, email, userId]
     );
 };
@@ -130,5 +130,18 @@ module.exports.updateUsers = (firstname, lastname, email, password, userId) => {
 
     `,
         [firstname, lastname, email, password, userId]
+    );
+};
+
+module.exports.updateProfiles = (age, city, url, userId) => {
+    return db.query(
+        `
+        INSERT INTO profiles (age, city, url, user_id)
+        VALUES ($1, $2, $3, $4)
+        ON CONFLICT (user_id)
+        DO UPDATE SET age = $1, city = $2, url =$3
+        RETURNING *
+        `,
+        [age || null, city, url, userId]
     );
 };
