@@ -40,11 +40,16 @@ app.use(
 
 //////////////////////////////////////// ROUTES ///////////////////////////////////////
 
+// GET request to root "/" route - redirects to "/register"
+app.get("/", (req, res) => {
+    res.redirect("/register");
+});
+
 // GET request to "/register" route
 app.get("/register", (req, res) => {
     const { userId } = req.session;
     if (userId) {
-        res.redirect("petition");
+        res.redirect("/petition");
     } else {
         res.render("register", {});
     }
@@ -108,8 +113,6 @@ app.post("/register", (req, res) => {
 // GET request to "/profile" route
 app.get("/profile", (req, res) => {
     const { userId, profileCreated } = req.session;
-    console.log("userId:", userId);
-    console.log("profileCreated:", profileCreated);
 
     if (userId) {
         if (profileCreated) {
@@ -203,11 +206,6 @@ app.post("/login", (req, res) => {
     }
 });
 
-// GET request to root "/" route - redirects to "/register"
-app.get("/", (req, res) => {
-    res.redirect("/register");
-});
-
 // GET request to "/petition" route
 app.get("/petition", (req, res) => {
     //if signed session "cookie" exists, redirect the user to the signed paged
@@ -217,7 +215,7 @@ app.get("/petition", (req, res) => {
         db.showSignature(userId).then((arg) => {
             if (arg.rows.length != 0) {
                 req.session.signed = true;
-                res.redirect("/signed");
+                res.redirect("/petition/signed");
             } else {
                 res.render("petition", {});
             }
@@ -244,7 +242,7 @@ app.post("/petition", (req, res) => {
                 console.log("results", results);
                 console.log("results row", results.rows[0]);
                 console.log("signed cookie", req.session);
-                res.redirect("/signed");
+                res.redirect("/petition/signed");
             })
             .catch((err) => {
                 console.log("error with addSignature", err);
@@ -256,8 +254,8 @@ app.post("/petition", (req, res) => {
     }
 });
 
-// GET request to the "/singed" route
-app.get("/signed", (req, res) => {
+// GET request to the "petition/singed" route
+app.get("/petition/signed", (req, res) => {
     //if cookie set, countSignatures and render the row count and the current signer name in "/signed"
     const { userId, signed } = req.session;
     console.log("signed cookie at /signed: ", signed);
@@ -281,8 +279,8 @@ app.get("/signed", (req, res) => {
     }
 });
 
-// GET request to the "/singers" route
-app.get("/signers", (req, res) => {
+// GET request to the "petition/singers" route
+app.get("/petition/signers", (req, res) => {
     //if cookie set, get all names of signers and and render in "/signers"
     const { signed } = req.session;
 
@@ -302,12 +300,14 @@ app.get("/signers", (req, res) => {
     }
 });
 
-app.get("/edit", (req, res) => {
+// GET request to the "profile/edit" route
+app.get("/profile/edit", (req, res) => {
     const { userId } = req.session;
     // console.log("userId:", userId);
     if (userId) {
         db.getProfile(userId)
             .then(({ rows }) => {
+                console.log("edit page rows:", rows);
                 res.render("edit", {
                     rows,
                 });
@@ -317,6 +317,53 @@ app.get("/edit", (req, res) => {
             });
     } else {
         res.redirect("/register");
+    }
+});
+
+// POST request to the "profile/edit" route
+app.post("/profile/edit", (req, res) => {
+    const { userId } = req.session;
+    const { firstname, surname, email, password } = req.body;
+    if (password == "") {
+        db.updateUsersNoPw(firstname, surname, email, userId)
+            .then(({ rows }) => {
+                res.redirect("/petition");
+                console.log("update to users table (excl. Pw col.): ", rows);
+            })
+            .catch((err) => {
+                console.log(
+                    "error in POST /profile/edit with updateUsersNoPw(): ",
+                    err
+                );
+            });
+
+        // upsert user_profiles
+    } else {
+        hash(password)
+            .then((hashedPw) => {
+                console.log("hashedPw in /edit", hashedPw);
+                db.updateUsers(firstname, surname, email, hashedPw, userId)
+                    .then(({ rows }) => {
+                        res.redirect("/petition");
+                        console.log("update to users table (all cols): ", rows);
+                    })
+                    .catch((err) => {
+                        console.log(
+                            "error in POST /profile/edit with updateUsers(): ",
+                            err
+                        );
+                        res.render("edit", {
+                            empty: true, // render error message properly on edit handlebar
+                        });
+                    });
+            })
+            .catch((err) => {
+                console.log(
+                    "error in POST /profile/edit with hashedPw(): ",
+                    err
+                );
+            });
+        // upsert User_profiles
     }
 });
 

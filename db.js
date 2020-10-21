@@ -106,3 +106,29 @@ module.exports.getProfile = (user_id) => {
         [user_id]
     );
 };
+
+module.exports.updateUsersNoPw = (firstname, lastname, email, userId) => {
+    return db.query(
+        `
+        UPDATE users 
+        SET first = $1, last=$2, email=$3
+        WHERE id = $4
+        RETURNING *
+
+    `,
+        [firstname, lastname, email, userId]
+    );
+};
+
+module.exports.updateUsers = (firstname, lastname, email, password, userId) => {
+    return db.query(
+        `
+        UPDATE users 
+        SET first = $1, last=$2, email=$3, password=$4
+        WHERE id = $5
+        RETURNING *
+
+    `,
+        [firstname, lastname, email, password, userId]
+    );
+};
