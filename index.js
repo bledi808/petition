@@ -156,36 +156,43 @@ app.post("/login", (req, res) => {
     console.log("user-pw:", password);
 
     if (email !== "" && password !== "") {
-        db.getPassword(email).then((results) => {
-            console.log("results", results.rows[0]);
-            let hashedPw = results.rows[0].password;
-            console.log("hashedPw: ", hashedPw);
-            compare(password, hashedPw)
-                .then((match) => {
-                    console.log("userPw matches hashedPw?", match);
-                    // console.log("cookie after login:", req.session);
-                    if (match) {
-                        req.session.userId = results.rows[0].id;
-                        res.redirect("/petition");
-                    } else {
+        db.getPassword(email)
+            .then((results) => {
+                console.log("results", results.rows[0]);
+                let hashedPw = results.rows[0].password;
+                console.log("hashedPw: ", hashedPw);
+                compare(password, hashedPw)
+                    .then((match) => {
+                        console.log("userPw matches hashedPw?", match);
+                        // console.log("cookie after login:", req.session);
+                        if (match) {
+                            req.session.userId = results.rows[0].id;
+                            res.redirect("/petition");
+                        } else {
+                            res.render("login", {
+                                empty: true, // make error msgs more specific to error later
+                            });
+                        }
+                    })
+                    .catch((err) => {
+                        console.log("error in POST /login compare", err);
                         res.render("login", {
                             empty: true, // make error msgs more specific to error later
                         });
-                    }
-                })
-                .catch((err) => {
-                    console.log("error in POST /login compare", err);
-                    res.render("login", {
-                        empty: true, // make error msgs more specific to error later
+                    })
+                    .catch((err) => {
+                        console.log("error in POST /login getPassword()", err);
+                        res.render("login", {
+                            empty: true, // make error msgs more specific to error later
+                        });
                     });
-                })
-                .catch((err) => {
-                    console.log("error in POST /login getPassword()", err);
-                    res.render("login", {
-                        empty: true, // make error msgs more specific to error later
-                    });
+            })
+            .catch((err) => {
+                console.log("error in /POST login with getPassword()", err);
+                res.render("login", {
+                    empty: true, // make error msgs more specific to error later
                 });
-        });
+            });
     } else {
         res.render("login", {
             empty: true, // make error msgs more specific to error later
@@ -289,6 +296,24 @@ app.get("/signers", (req, res) => {
             });
     } else {
         res.redirect("/petition");
+    }
+});
+
+app.get("/edit", (req, res) => {
+    const { userId } = req.session;
+    // console.log("userId:", userId);
+    if (userId) {
+        db.getProfile(userId)
+            .then(({ rows }) => {
+                res.render("edit", {
+                    rows,
+                });
+            })
+            .catch((err) => {
+                console.log("error with getProfile() in GET /edit", err);
+            });
+    } else {
+        res.redirect("/register");
     }
 });
 

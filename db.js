@@ -90,3 +90,16 @@ module.exports.getSigners = () => {
     ON users.id = profiles.user_id;
     `);
 };
+
+module.exports.getProfile = (user_id) => {
+    return db.query(
+        `
+    SELECT users.first, users.last, users.email, profiles.age, profiles.city, profiles.url
+    FROM users
+    JOIN profiles
+    ON users.id = profiles.user_id 
+    WHERE user_id=$1   
+    `,
+        [user_id]
+    );
+};
