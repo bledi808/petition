@@ -5,21 +5,10 @@ const submitButton = $("#submit");
 const signatureInput = $("#signature");
 // const canvasVanilla = document.getElementById("canvas");
 
-// console.log("canvas offset left:", canvas.offset().left);
-// console.log("canvas offset top:", canvas.offset().top) - 15;
-
-// document.addEventListener("mousedown", (e) => {
-//     let x = e.clientX;
-//     let y = e.clientY;
-//     console.log("x:", x);
-//     console.log("y:", y);
-// });
-
 canvas.on("mousedown", (e) => {
     let x = e.clientX - canvas.offset().left;
     let y = e.clientY - canvas.offset().top;
-    // console.log("x:", x);
-    // console.log("y:", y);
+
     canvas.css({
         cursor: "crosshair",
     });
@@ -29,8 +18,6 @@ canvas.on("mousedown", (e) => {
     canvas.on("mousemove", function drawSig(e) {
         let x = e.clientX - canvas.offset().left;
         let y = e.clientY - canvas.offset().top;
-        // console.log("xx:", x);
-        // console.log("yy:", y);
         ctx.lineTo(x, y);
         ctx.stroke();
         ctx.strokeStyle = "blue";

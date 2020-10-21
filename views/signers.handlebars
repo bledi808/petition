@@ -4,7 +4,20 @@
     <h3>Other comrades include:</h3>
             <div>
                 {{#rows}}
-                    <p style="color:brown">{{first}} {{last}} {{age}} {{city}} {{url}}</p>
+                <h3>
+                    {{#if url}}
+                        <a href="{{url}}" style="padding:2px 3px; text-decoration: none; background-color: rgba(25, 25, 176, 0.774); color:whitesmoke">{{first}} {{last}}</a>
+                    {{else}}   
+                        <a style="padding:2px 3px; text-decoration: none; background-color: rgba(140, 86, 38, 0.774); color:whitesmoke">{{first}} {{last}}</a>
+                    {{/if}} 
+                    {{#if age}}
+                        <a style="padding:2px 3px; background-color: tomato; color:whitesmoke">{{age}}</a>
+                    {{/if}} 
+                
+                    {{#if city}}
+                        <a href="/signers/{{city}}" style="padding:2px 3px;text-decoration: none; background-color: rgb(76, 155, 76); color:whitesmoke">{{city}}</a>
+                    {{/if}} 
+                </h3> 
                 {{/rows}}
             </div>
      {{!-- </div> --}}

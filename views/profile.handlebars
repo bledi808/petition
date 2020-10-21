@@ -9,7 +9,7 @@
                     <input type="text" id="city" name="city" placeholder="type city..." style="margin:1% 0">
                 <span></br>Homepage</span></br>
                     <input type="text" id="url" name="url" placeholder="type homepage..." style="margin:1% 0">
-            <input type="hidden" name="_csrf" value="{{csrfToken}}">
+            {{>csrf}}
         <div><button name="submit" id="submit">Continue</button></div>           
     </form>
 </div>

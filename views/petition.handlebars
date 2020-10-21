@@ -20,7 +20,7 @@
                     <canvas id="canvas" style="margin:1% 0" width="300" height="100" ></canvas>
                 </div>
                 </div>
-                <input type="hidden" name="_csrf" value="{{csrfToken}}">
+                {{>csrf}}
             <div><button name="submit" id="submit">Submit</button></div>
         </form>
         {{#if empty}}

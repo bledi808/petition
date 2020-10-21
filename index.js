@@ -274,7 +274,7 @@ app.get("/signed", (req, res) => {
 // GET request to the "/singers" route
 app.get("/signers", (req, res) => {
     //if cookie set, get all names of signers and and render in "/signers"
-    const { userId, signed } = req.session;
+    const { signed } = req.session;
 
     if (signed) {
         db.getSigners()

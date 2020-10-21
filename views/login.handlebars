@@ -7,7 +7,7 @@
                         <input type="text" id="surname" name="email" placeholder="type email..." style="margin:1% 0">
                     <span></br>Password</span></br>
                         <input type="text" id="surname" name="password" placeholder="type password..." style="margin:1% 0">
-                {{!-- <input type="hidden" name="_csrf" value="{{csrfToken}}"> --}}
+                {{>csrf}}
             <div><button name="submit" id="submit">Log in</button></div>
             <h4 style="margin-top: 5%; color:black; width:250px">
             If you don't have an account yet, register <a href="/register" style="text-decoration: none; color: blue">here</a>!
