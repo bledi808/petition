@@ -1,6 +1,9 @@
 // where our db queries live
 var spicedPg = require("spiced-pg"); // middleman or client
-var db = spicedPg("postgres:postgres:postgres@localhost:5432/petition"); // port 5432 is the standard db port
+var db = spicedPg(
+    process.env.DATABASE_URL ||
+        "postgres:postgres:postgres@localhost:5432/petition"
+); // port 5432 is the standard db port
 
 //////////////////////////////////////// signatures table queries ////////////////////////////////////////
 

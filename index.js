@@ -175,20 +175,23 @@ app.post("/login", (req, res) => {
                         }
                     })
                     .catch((err) => {
-                        console.log("error in POST /login compare", err);
-                        res.render("login", {
-                            empty: true, // make error msgs more specific to error later
-                        });
-                    })
-                    .catch((err) => {
-                        console.log("error in POST /login getPassword()", err);
+                        console.log(
+                            "error in POST /login compare: incorrecr email and/or pw",
+                            err
+                        );
                         res.render("login", {
                             empty: true, // make error msgs more specific to error later
                         });
                     });
+                // .catch((err) => {
+                //     console.log("error in POST /login getPassword()", err);
+                //     res.render("login", {
+                //         empty: true, // make error msgs more specific to error later
+                //     });
+                // });
             })
             .catch((err) => {
-                console.log("error in /POST login with getPassword()", err);
+                console.log("error in POST /login with getPassword()", err);
                 res.render("login", {
                     empty: true, // make error msgs more specific to error later
                 });
@@ -318,7 +321,7 @@ app.get("/edit", (req, res) => {
 });
 
 //////////////////////////////////////// PORT LISTENER ////////////////////////////////////////
-app.listen(8080, () =>
+app.listen(process.env.PORT || 8080, () =>
     console.log(
         "<><><><><><><><><><><><><><><>| petition listenting |<><><><><><><><><><><><><><><>"
     )
