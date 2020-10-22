@@ -40,12 +40,10 @@ app.use(function (req, res, next) {
 
 //////////////////////////////////////// ROUTES ///////////////////////////////////////
 
-// GET request to root "/" route - redirects to "/register"
 app.get("/", (req, res) => {
     res.redirect("/register");
 });
 
-// GET request to "/register" route
 app.get("/register", (req, res) => {
     const { userId } = req.session;
     if (userId) {
@@ -55,24 +53,19 @@ app.get("/register", (req, res) => {
     }
 });
 
-// POST request to "/register" route
 app.post("/register", (req, res) => {
-    // use hash when a user registers, all we need is what a user wants their pw to be
+    console.log("req.body in /register:", req.body);
     const { firstname, surname, email, password } = req.body;
-    // console.log("req.body:", req.body);
     if (firstname !== "" && surname !== "" && email !== "" && password !== "") {
         db.getPassword(email)
             .then((results) => {
-                // console.log("results", results);
                 if (results.rows.length === 0) {
                     hash(password)
                         .then((hashedPw) => {
-                            // console.log("hashedPw in /register", hashedPw);
                             db.addUser(firstname, surname, email, hashedPw)
                                 .then((results) => {
                                     req.session.userId = results.rows[0].id;
-                                    // console.log("cookie after:", req.session);
-                                    res.redirect("/profile"); // maybe reroute to /login ; decide on flow later
+                                    res.redirect("/profile");
                                 })
                                 .catch((err) => {
                                     console.log(
@@ -101,7 +94,7 @@ app.post("/register", (req, res) => {
                 }
             })
             .catch((err) => {
-                console.log("erro in getPassword()", err);
+                console.log("error in /register with getPassword()", err);
             });
     } else {
         res.render("register", {
@@ -110,7 +103,6 @@ app.post("/register", (req, res) => {
     }
 });
 
-// GET request to "/profile" route
 app.get("/profile", (req, res) => {
     const { userId, profileCreated } = req.session;
 
@@ -136,14 +128,12 @@ app.get("/profile", (req, res) => {
     }
 });
 
-// POST request to "/profile" route
 app.post("/profile", (req, res) => {
     const { userId } = req.session;
     const { age, city, url } = req.body;
 
     db.addProfile(age, city, url, userId)
-        .then((results) => {
-            console.log("results form POST /profile", results.rows[0]);
+        .then(() => {
             req.session.profileCreated = true;
             res.redirect("/petition");
         })
@@ -153,7 +143,6 @@ app.post("/profile", (req, res) => {
         });
 });
 
-// GET request to "/login" route
 app.get("/login", (req, res) => {
     console.log("req.session at /login:", req.session);
     const { userId } = req.session;
@@ -164,29 +153,16 @@ app.get("/login", (req, res) => {
     }
 });
 
-//POST request to "/login" route
 app.post("/login", (req, res) => {
     const { email, password } = req.body; // user-entered email and password
-    console.log("user-email:", email);
-    console.log("user-pw:", password);
-
     if (email !== "" && password !== "") {
         db.getPassword(email)
             .then((results) => {
-                console.log("results", results.rows[0]);
                 let hashedPw = results.rows[0].password;
-                console.log("hashedPw: ", hashedPw);
                 compare(password, hashedPw)
                     .then((match) => {
-                        console.log("userPw matches hashedPw?", match);
-                        // console.log("cookie after login:", req.session);
                         if (match) {
                             req.session.userId = results.rows[0].id;
-                            console.log(
-                                "reqSessionUserID:",
-                                req.session.userId
-                            );
-                            // const { userId } = req.session;
                             db.showSignature(req.session.userId)
                                 .then((arg) => {
                                     if (arg.rows.length !== 0) {
@@ -215,12 +191,6 @@ app.post("/login", (req, res) => {
                             empty: true, // make error msgs more specific to error later
                         });
                     });
-                // .catch((err) => {
-                //     console.log("error in POST /login getPassword()", err);
-                //     res.render("login", {
-                //         empty: true, // make error msgs more specific to error later
-                //     });
-                // });
             })
             .catch((err) => {
                 console.log("error in POST /login with getPassword()", err);
@@ -235,7 +205,6 @@ app.post("/login", (req, res) => {
     }
 });
 
-// GET request to "/petition" route
 app.get("/petition", (req, res) => {
     console.log("req.session at /petition:", req.session);
     const { userId } = req.session;
@@ -254,16 +223,13 @@ app.get("/petition", (req, res) => {
     }
 });
 
-//POST request on "/petition" route: inserts signature into signatures table
 app.post("/petition", (req, res) => {
     const { signature } = req.body;
     const { userId } = req.session;
     if (signature !== "") {
         db.addSignature(userId, signature)
-            .then((results) => {
+            .then(() => {
                 req.session.signed = true;
-                // console.log("results row", results.rows[0]);
-                // console.log("signed cookie", req.session);
                 res.redirect("/petition/signed");
             })
             .catch((err) => {
@@ -276,7 +242,6 @@ app.post("/petition", (req, res) => {
     }
 });
 
-// GET request to the "petition/singed" route
 app.get("/petition/signed", (req, res) => {
     //if cookie set, countSignatures and render the row count and the current signer name in "/signed"
     const { userId, signed } = req.session;
@@ -301,7 +266,6 @@ app.get("/petition/signed", (req, res) => {
     }
 });
 
-// GET request to the "petition/singers" route
 app.get("/petition/signers", (req, res) => {
     //if cookie set, get all names of signers and and render in "/signers"
     const { signed } = req.session;
@@ -322,10 +286,8 @@ app.get("/petition/signers", (req, res) => {
     }
 });
 
-// GET request to the "profile/edit" route
 app.get("/profile/edit", (req, res) => {
     const { userId, profileCreated } = req.session;
-    // console.log("userId:", userId);
     if (userId) {
         if (profileCreated) {
             db.getProfile(userId)
@@ -346,7 +308,6 @@ app.get("/profile/edit", (req, res) => {
     }
 });
 
-// POST request to the "profile/edit" route
 app.post("/profile/edit", (req, res) => {
     const { userId, retrievedEmail } = req.session;
     const { firstname, surname, email, password, age, city, url } = req.body;
@@ -355,12 +316,7 @@ app.post("/profile/edit", (req, res) => {
             if (rows.length === 0 || rows[0].email === retrievedEmail) {
                 if (password == "") {
                     db.updateUsersNoPw(firstname, surname, email, userId)
-                        .then(({ rows }) => {
-                            // res.redirect("/petition");
-                            console.log(
-                                "update to users table (excl. Pw col.): ",
-                                rows
-                            );
+                        .then(() => {
                             db.updateProfiles(age, city, url, userId)
                                 .then(({ rows }) => {
                                     res.redirect("/petition");
@@ -447,11 +403,9 @@ app.post("/profile/edit", (req, res) => {
             action: "Retry",
             link: "/profile/edit",
         });
-        // res.redirect("/profile/edit");
     }
 });
 
-// POST request to delete/signature
 app.post("/delete/signature", (req, res) => {
     const { userId } = req.session;
     db.deleteSignature(userId)
