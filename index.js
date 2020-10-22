@@ -329,20 +329,23 @@ app.post("/profile/edit", (req, res) => {
             .then(({ rows }) => {
                 // res.redirect("/petition");
                 console.log("update to users table (excl. Pw col.): ", rows);
+                db.updateProfiles(age, city, url, userId)
+                    .then(({ rows }) => {
+                        res.redirect("/petition");
+                        console.log("update to profiles table: ", rows);
+                    })
+                    .catch((err) => {
+                        console.log(
+                            "error in POST /edit with updateProfiles(): ",
+                            err
+                        );
+                    });
             })
             .catch((err) => {
                 console.log(
                     "error in POST /edit with updateUsersNoPw(): ",
                     err
                 );
-            });
-        db.updateProfiles(age, city, url, userId)
-            .then(({ rows }) => {
-                // res.redirect("/petition");
-                console.log("update to profiles table: ", rows);
-            })
-            .catch((err) => {
-                console.log("error in POST /edit with updateProfiles(): ", err);
             });
     } else {
         hash(password)
@@ -351,7 +354,17 @@ app.post("/profile/edit", (req, res) => {
                 db.updateUsers(firstname, surname, email, hashedPw, userId)
                     .then(({ rows }) => {
                         console.log("update to users table (all cols): ", rows);
-                        // res.redirect("/petition");
+                        db.updateProfiles(age, city, url, userId)
+                            .then(({ rows }) => {
+                                res.redirect("/petition");
+                                console.log("update to profiles table: ", rows);
+                            })
+                            .catch((err) => {
+                                console.log(
+                                    "error in POST /edit with updateProfiles(): ",
+                                    err
+                                );
+                            });
                     })
                     .catch((err) => {
                         console.log(
@@ -366,16 +379,7 @@ app.post("/profile/edit", (req, res) => {
             .catch((err) => {
                 console.log("error in POST /edit with hashedPw(): ", err);
             });
-        db.updateProfiles(age, city, url, userId)
-            .then(({ rows }) => {
-                // res.redirect("/petition");
-                console.log("update to profiles table: ", rows);
-            })
-            .catch((err) => {
-                console.log("error in POST /edit with updateProfiles(): ", err);
-            });
     }
-    res.redirect("/petition"); // appears to run through else block first then redirects to /petition then if black
 });
 
 //////////////////////////////////////// PORT LISTENER ////////////////////////////////////////
