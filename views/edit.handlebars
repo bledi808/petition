@@ -21,5 +21,9 @@
                 {{>csrf}}
                 <div><button name="submit" id="submit">Update</button></div>
                 {{/rows}}
+                
     </form>
+        {{#if empty}}
+            <p style="color: tomato; margin-top:1%">Name, Surname and Email fields must be populated! </p>  
+        {{/if}}
 </div>

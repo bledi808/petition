@@ -2,7 +2,7 @@
 //////////////////////////////////////// DECLARATIONS ////////////////////////////////////////
 
 const express = require("express");
-const app = express();
+// const app = express();
 const handlebars = require("express-handlebars");
 const db = require("./db");
 const cookieSession = require("cookie-session");
@@ -15,6 +15,7 @@ const setHandlebars = handlebars.create({
     },
 });
 const { hash, compare } = require("./bc");
+const app = (exports.app = express());
 
 //////////////////////////////////////// MIDDLEWARE ////////////////////////////////////////
 app.use(
@@ -146,7 +147,7 @@ app.post("/profile", (req, res) => {
 app.get("/login", (req, res) => {
     const { userId } = req.session;
     if (userId) {
-        res.redirect("petition");
+        res.redirect("/petition");
     } else {
         res.render("login", {});
     }
@@ -210,16 +211,22 @@ app.post("/login", (req, res) => {
 app.get("/petition", (req, res) => {
     //if signed session "cookie" exists, redirect the user to the signed paged
     const { userId, signed } = req.session;
+    // console.log("userId in petition:", userId);
     console.log("req.session at /petition:", req.session);
+
     if (userId) {
-        db.showSignature(userId).then((arg) => {
-            if (arg.rows.length != 0) {
-                req.session.signed = true;
-                res.redirect("/petition/signed");
-            } else {
-                res.render("petition", {});
-            }
-        });
+        if (signed) {
+            db.showSignature(userId).then((arg) => {
+                if (arg.rows.length != 0) {
+                    req.session.signed = true;
+                    res.redirect("/petition/signed");
+                } else {
+                    res.render("petition", {});
+                }
+            });
+        } else {
+            res.render("petition", {});
+        }
     } else {
         res.redirect("/register");
     }
@@ -229,19 +236,12 @@ app.get("/petition", (req, res) => {
 app.post("/petition", (req, res) => {
     const { signature } = req.body;
     const { userId } = req.session;
-    // console.log("req.body:", req.body);
-    // console.log("req.session:", req.session);
-
-    //if submission successful, set a cookie and redirect user to signed page
     if (signature !== "") {
         db.addSignature(userId, signature)
             .then((results) => {
-                // console.log("results:", results);
                 req.session.signed = true;
-
-                console.log("results", results);
-                console.log("results row", results.rows[0]);
-                console.log("signed cookie", req.session);
+                // console.log("results row", results.rows[0]);
+                // console.log("signed cookie", req.session);
                 res.redirect("/petition/signed");
             })
             .catch((err) => {
@@ -324,67 +324,82 @@ app.get("/profile/edit", (req, res) => {
 app.post("/profile/edit", (req, res) => {
     const { userId } = req.session;
     const { firstname, surname, email, password, age, city, url } = req.body;
-    if (password == "") {
-        db.updateUsersNoPw(firstname, surname, email, userId)
-            .then(({ rows }) => {
-                // res.redirect("/petition");
-                console.log("update to users table (excl. Pw col.): ", rows);
-                db.updateProfiles(age, city, url, userId)
-                    .then(({ rows }) => {
-                        res.redirect("/petition");
-                        console.log("update to profiles table: ", rows);
-                    })
-                    .catch((err) => {
-                        console.log(
-                            "error in POST /edit with updateProfiles(): ",
-                            err
-                        );
-                    });
-            })
-            .catch((err) => {
-                console.log(
-                    "error in POST /edit with updateUsersNoPw(): ",
-                    err
-                );
-            });
-    } else {
-        hash(password)
-            .then((hashedPw) => {
-                console.log("hashedPw in /edit", hashedPw);
-                db.updateUsers(firstname, surname, email, hashedPw, userId)
-                    .then(({ rows }) => {
-                        console.log("update to users table (all cols): ", rows);
-                        db.updateProfiles(age, city, url, userId)
-                            .then(({ rows }) => {
-                                res.redirect("/petition");
-                                console.log("update to profiles table: ", rows);
-                            })
-                            .catch((err) => {
-                                console.log(
-                                    "error in POST /edit with updateProfiles(): ",
-                                    err
-                                );
-                            });
-                    })
-                    .catch((err) => {
-                        console.log(
-                            "error in POST /edit with updateUsers(): ",
-                            err
-                        );
-                        res.render("edit", {
-                            empty: true, // render error message properly on edit handlebar
+    if (firstname !== "" && surname !== "" && email !== "") {
+        if (password == "") {
+            db.updateUsersNoPw(firstname, surname, email, userId)
+                .then(({ rows }) => {
+                    // res.redirect("/petition");
+                    console.log(
+                        "update to users table (excl. Pw col.): ",
+                        rows
+                    );
+                    db.updateProfiles(age, city, url, userId)
+                        .then(({ rows }) => {
+                            res.redirect("/petition");
+                            console.log("update to profiles table: ", rows);
+                        })
+                        .catch((err) => {
+                            console.log(
+                                "error in POST /edit with updateProfiles(): ",
+                                err
+                            );
                         });
-                    });
-            })
-            .catch((err) => {
-                console.log("error in POST /edit with hashedPw(): ", err);
-            });
+                })
+                .catch((err) => {
+                    console.log(
+                        "error in POST /edit with updateUsersNoPw(): ",
+                        err
+                    );
+                });
+        } else {
+            hash(password)
+                .then((hashedPw) => {
+                    console.log("hashedPw in /edit", hashedPw);
+                    db.updateUsers(firstname, surname, email, hashedPw, userId)
+                        .then(({ rows }) => {
+                            console.log(
+                                "update to users table (all cols): ",
+                                rows
+                            );
+                            db.updateProfiles(age, city, url, userId)
+                                .then(({ rows }) => {
+                                    res.redirect("/petition");
+                                    console.log(
+                                        "update to profiles table: ",
+                                        rows
+                                    );
+                                })
+                                .catch((err) => {
+                                    console.log(
+                                        "error in POST /edit with updateProfiles(): ",
+                                        err
+                                    );
+                                });
+                        })
+                        .catch((err) => {
+                            console.log(
+                                "error in POST /edit with updateUsers(): ",
+                                err
+                            );
+                            res.render("edit", {
+                                empty: true, // render error message properly on edit handlebar
+                            });
+                        });
+                })
+                .catch((err) => {
+                    console.log("error in POST /edit with hashedPw(): ", err);
+                });
+        }
+    } else {
+        res.redirect("/profile/edit");
     }
 });
 
 //////////////////////////////////////// PORT LISTENER ////////////////////////////////////////
-app.listen(process.env.PORT || 8080, () =>
-    console.log(
-        "<><><><><><><><><><><><><><><>| petition listenting |<><><><><><><><><><><><><><><>"
-    )
-);
+if (require.main == module) {
+    app.listen(process.env.PORT || 8080, () =>
+        console.log(
+            "<><><><><><><><><><><><><><><>| petition listenting |<><><><><><><><><><><><><><><>"
+        )
+    );
+}
