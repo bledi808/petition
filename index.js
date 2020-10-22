@@ -2,7 +2,6 @@
 //////////////////////////////////////// DECLARATIONS ////////////////////////////////////////
 
 const express = require("express");
-// const app = express();
 const handlebars = require("express-handlebars");
 const db = require("./db");
 const cookieSession = require("cookie-session");
@@ -32,12 +31,12 @@ app.use(
         extended: false,
     })
 );
-// app.use(csurf());
-// app.use(function (req, res, next) {
-//     res.locals.csrfToken = req.csrfToken();
-//     res.set("x-frame-options", "DENY");
-//     next();
-// });
+app.use(csurf());
+app.use(function (req, res, next) {
+    res.locals.csrfToken = req.csrfToken();
+    res.set("x-frame-options", "DENY");
+    next();
+});
 
 //////////////////////////////////////// ROUTES ///////////////////////////////////////
 
@@ -119,7 +118,18 @@ app.get("/profile", (req, res) => {
         if (profileCreated) {
             res.redirect("/petition");
         } else {
-            res.render("profile", {});
+            db.getProfile(userId)
+                .then(({ rows }) => {
+                    if (rows.length === 0) {
+                        res.render("profile");
+                    } else {
+                        req.session.profileCreated = true;
+                        res.redirect("/petition");
+                    }
+                })
+                .catch((err) => {
+                    console.log("error with getProfile() in GET /profile", err);
+                });
         }
     } else {
         res.redirect("/register");
@@ -145,6 +155,7 @@ app.post("/profile", (req, res) => {
 
 // GET request to "/login" route
 app.get("/login", (req, res) => {
+    console.log("req.session at /login:", req.session);
     const { userId } = req.session;
     if (userId) {
         res.redirect("/petition");
@@ -171,7 +182,24 @@ app.post("/login", (req, res) => {
                         // console.log("cookie after login:", req.session);
                         if (match) {
                             req.session.userId = results.rows[0].id;
-                            res.redirect("/petition");
+                            console.log(
+                                "reqSessionUserID:",
+                                req.session.userId
+                            );
+                            // const { userId } = req.session;
+                            db.showSignature(req.session.userId)
+                                .then((arg) => {
+                                    if (arg.rows.length !== 0) {
+                                        req.session.signed = true;
+                                    }
+                                })
+                                .catch((err) => {
+                                    console.log(
+                                        "error in POST /login with showSignature()",
+                                        err
+                                    );
+                                });
+                            res.redirect("/profile");
                         } else {
                             res.render("login", {
                                 empty: true, // make error msgs more specific to error later
@@ -209,24 +237,18 @@ app.post("/login", (req, res) => {
 
 // GET request to "/petition" route
 app.get("/petition", (req, res) => {
-    //if signed session "cookie" exists, redirect the user to the signed paged
-    const { userId, signed } = req.session;
-    // console.log("userId in petition:", userId);
     console.log("req.session at /petition:", req.session);
+    const { userId } = req.session;
 
     if (userId) {
-        if (signed) {
-            db.showSignature(userId).then((arg) => {
-                if (arg.rows.length != 0) {
-                    req.session.signed = true;
-                    res.redirect("/petition/signed");
-                } else {
-                    res.render("petition", {});
-                }
-            });
-        } else {
-            res.render("petition", {});
-        }
+        db.showSignature(userId).then((arg) => {
+            if (arg.rows.length != 0) {
+                req.session.signed = true;
+                res.redirect("/petition/signed");
+            } else {
+                res.render("petition", {});
+            }
+        });
     } else {
         res.redirect("/register");
     }
@@ -302,19 +324,23 @@ app.get("/petition/signers", (req, res) => {
 
 // GET request to the "profile/edit" route
 app.get("/profile/edit", (req, res) => {
-    const { userId } = req.session;
+    const { userId, profileCreated } = req.session;
     // console.log("userId:", userId);
     if (userId) {
-        db.getProfile(userId)
-            .then(({ rows }) => {
-                console.log("edit page rows:", rows);
-                res.render("edit", {
-                    rows,
+        if (profileCreated) {
+            db.getProfile(userId)
+                .then(({ rows }) => {
+                    req.session.retrievedEmail = rows[0].email;
+                    res.render("edit", {
+                        rows,
+                    });
+                })
+                .catch((err) => {
+                    console.log("error with getProfile() in GET /edit", err);
                 });
-            })
-            .catch((err) => {
-                console.log("error with getProfile() in GET /edit", err);
-            });
+        } else {
+            res.redirect("/profile");
+        }
     } else {
         res.redirect("/register");
     }
@@ -322,43 +348,17 @@ app.get("/profile/edit", (req, res) => {
 
 // POST request to the "profile/edit" route
 app.post("/profile/edit", (req, res) => {
-    const { userId } = req.session;
+    const { userId, retrievedEmail } = req.session;
     const { firstname, surname, email, password, age, city, url } = req.body;
     if (firstname !== "" && surname !== "" && email !== "") {
-        if (password == "") {
-            db.updateUsersNoPw(firstname, surname, email, userId)
-                .then(({ rows }) => {
-                    // res.redirect("/petition");
-                    console.log(
-                        "update to users table (excl. Pw col.): ",
-                        rows
-                    );
-                    db.updateProfiles(age, city, url, userId)
+        db.getPassword(email).then(({ rows }) => {
+            if (rows.length === 0 || rows[0].email === retrievedEmail) {
+                if (password == "") {
+                    db.updateUsersNoPw(firstname, surname, email, userId)
                         .then(({ rows }) => {
-                            res.redirect("/petition");
-                            console.log("update to profiles table: ", rows);
-                        })
-                        .catch((err) => {
+                            // res.redirect("/petition");
                             console.log(
-                                "error in POST /edit with updateProfiles(): ",
-                                err
-                            );
-                        });
-                })
-                .catch((err) => {
-                    console.log(
-                        "error in POST /edit with updateUsersNoPw(): ",
-                        err
-                    );
-                });
-        } else {
-            hash(password)
-                .then((hashedPw) => {
-                    console.log("hashedPw in /edit", hashedPw);
-                    db.updateUsers(firstname, surname, email, hashedPw, userId)
-                        .then(({ rows }) => {
-                            console.log(
-                                "update to users table (all cols): ",
+                                "update to users table (excl. Pw col.): ",
                                 rows
                             );
                             db.updateProfiles(age, city, url, userId)
@@ -378,21 +378,95 @@ app.post("/profile/edit", (req, res) => {
                         })
                         .catch((err) => {
                             console.log(
-                                "error in POST /edit with updateUsers(): ",
+                                "error in POST /edit with updateUsersNoPw(): ",
                                 err
                             );
-                            res.render("edit", {
-                                empty: true, // render error message properly on edit handlebar
-                            });
                         });
-                })
-                .catch((err) => {
-                    console.log("error in POST /edit with hashedPw(): ", err);
+                } else {
+                    // close if (password)
+                    hash(password)
+                        .then((hashedPw) => {
+                            console.log("hashedPw in /edit", hashedPw);
+                            db.updateUsers(
+                                firstname,
+                                surname,
+                                email,
+                                hashedPw,
+                                userId
+                            )
+                                .then(({ rows }) => {
+                                    console.log(
+                                        "update to users table (all cols): ",
+                                        rows
+                                    );
+                                    db.updateProfiles(age, city, url, userId)
+                                        .then(({ rows }) => {
+                                            res.redirect("/petition");
+                                            console.log(
+                                                "update to profiles table: ",
+                                                rows
+                                            );
+                                        })
+                                        .catch((err) => {
+                                            console.log(
+                                                "error in POST /edit with updateProfiles(): ",
+                                                err
+                                            );
+                                        });
+                                })
+                                .catch((err) => {
+                                    console.log(
+                                        "error in POST /edit with updateUsers(): ",
+                                        err
+                                    );
+                                    res.render("edit", {
+                                        empty: true, // render error message properly on edit handlebar
+                                    });
+                                });
+                        })
+                        .catch((err) => {
+                            console.log(
+                                "error in POST /edit with hashedPw(): ",
+                                err
+                            );
+                        });
+                } //closes else (password)
+            } else {
+                //belongs to if email is in use
+                res.render("edit", {
+                    text: "This email is unavailable",
+                    action: "Retry",
+                    link: "/profile/edit",
                 });
-        }
+            }
+        }); // closes db.getPassword()
     } else {
-        res.redirect("/profile/edit");
+        //closes if (empty fields)
+        res.render("edit", {
+            text: "Error updating",
+            action: "Retry",
+            link: "/profile/edit",
+        });
+        // res.redirect("/profile/edit");
     }
+});
+
+// POST request to delete/signature
+app.post("/delete/signature", (req, res) => {
+    const { userId } = req.session;
+    db.deleteSignature(userId)
+        .then(() => {
+            req.session.signed = null;
+            res.redirect("/petition");
+        })
+        .catch((err) => {
+            console.log("error in petition/signed with deleteSignature()", err);
+        });
+});
+
+app.post("/logout", (req, res) => {
+    req.session = null;
+    res.redirect("/login");
 });
 
 //////////////////////////////////////// PORT LISTENER ////////////////////////////////////////

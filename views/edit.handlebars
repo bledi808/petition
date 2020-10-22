@@ -18,12 +18,14 @@
                     <input type="text" id="city" name="city" placeholder="type city..." value="{{city}}" style="margin:1% 0">
                 <span></br>Homepage</span></br>
                     <input type="text" id="url" name="url" placeholder="type homepage..." value="{{url}}" style="margin:1% 0">
-                {{>csrf}}
                 <div><button name="submit" id="submit">Update</button></div>
                 {{/rows}}
+                {{>csrf}}
                 
     </form>
-        {{#if empty}}
+        {{!-- {{#if empty}}
             <p style="color: tomato; margin-top:1%">Name, Surname and Email fields must be populated! </p>  
-        {{/if}}
+        {{/if}} --}}
+        
+        {{>popup}}
 </div>

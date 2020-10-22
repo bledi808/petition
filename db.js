@@ -20,15 +20,19 @@ module.exports.addSignature = (user_id, signature) => {
     );
 };
 
+module.exports.deleteSignature = (user_id) => {
+    return db.query(
+        `
+        DELETE FROM signatures WHERE user_id=$1
+        `,
+        [user_id]
+    );
+};
+
 //SELECT to get count of signed up users
 module.exports.countSignatures = () => {
     return db.query(`SELECT count(*) FROM signatures`);
 };
-
-//SELECT to get name and surname of signed up users
-// module.exports.getSigners = () => {
-//     return db.query(`SELECT * FROM users`);
-// };
 
 module.exports.getCurrentSigner = (user_id) => {
     return db.query(`SELECT * FROM users WHERE id=$1`, [user_id]);

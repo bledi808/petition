@@ -27,9 +27,11 @@
             Update your profile
         </h4>
     </a>
-    <a style="text-decoration: none">
-        <h4 style="margin-top: 0; background-color: seagreen; padding:1% 2%;color:white; width:220px">
+    <form method="POST" action='/delete/signature'>
+        <button style="margin-top: 0; border: none; background-color: seagreen; padding:1% 2%;color:white; width:220px">
             Delete your signature
-        </h4>
-    </a>
+        </button>
+    {{>csrf}}    
+    </form>
+
 </div>
