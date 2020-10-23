@@ -1,6 +1,5 @@
 // where our routes live
 //////////////////////////////////////// DECLARATIONS ////////////////////////////////////////
-
 const express = require("express");
 const handlebars = require("express-handlebars");
 const db = require("./db");
@@ -94,53 +93,13 @@ app.post("/register", (req, res) => {
                 }
             })
             .catch((err) => {
-                console.log("error in /register with getPassword()", err);
+                console.log("error in /register with getPassword()!", err);
             });
     } else {
         res.render("register", {
             empty: true, // make error msgs more specific to error later
         });
     }
-});
-
-app.get("/profile", (req, res) => {
-    const { userId, profileCreated } = req.session;
-
-    if (userId) {
-        if (profileCreated) {
-            res.redirect("/petition");
-        } else {
-            db.getProfile(userId)
-                .then(({ rows }) => {
-                    if (rows.length === 0) {
-                        res.render("profile");
-                    } else {
-                        req.session.profileCreated = true;
-                        res.redirect("/petition");
-                    }
-                })
-                .catch((err) => {
-                    console.log("error with getProfile() in GET /profile", err);
-                });
-        }
-    } else {
-        res.redirect("/register");
-    }
-});
-
-app.post("/profile", (req, res) => {
-    const { userId } = req.session;
-    const { age, city, url } = req.body;
-
-    db.addProfile(age, city, url, userId)
-        .then(() => {
-            req.session.profileCreated = true;
-            res.redirect("/petition");
-        })
-        .catch((err) => {
-            console.log("error with addProfile()", err);
-            res.render("profile", {});
-        });
 });
 
 app.get("/login", (req, res) => {
@@ -203,6 +162,46 @@ app.post("/login", (req, res) => {
             empty: true, // make error msgs more specific to error later
         });
     }
+});
+
+app.get("/profile", (req, res) => {
+    const { userId, profileCreated } = req.session;
+
+    if (userId) {
+        if (profileCreated) {
+            res.redirect("/petition");
+        } else {
+            db.getProfile(userId)
+                .then(({ rows }) => {
+                    if (rows.length === 0) {
+                        res.render("profile");
+                    } else {
+                        req.session.profileCreated = true;
+                        res.redirect("/petition");
+                    }
+                })
+                .catch((err) => {
+                    console.log("error with getProfile() in GET /profile", err);
+                });
+        }
+    } else {
+        res.redirect("/register");
+    }
+});
+
+app.post("/profile", (req, res) => {
+    const { userId } = req.session;
+    const { age, city, url } = req.body;
+
+    db.addProfile(age, city, url, userId)
+        .then(() => {
+            req.session.profileCreated = true;
+            res.redirect("/petition");
+        })
+        .catch((err) => {
+            console.log("error with addProfile()", err);
+            res.render("profile", {});
+        });
 });
 
 app.get("/petition", (req, res) => {
@@ -284,6 +283,28 @@ app.get("/petition/signers", (req, res) => {
     } else {
         res.redirect("/petition");
     }
+});
+
+app.get("/petition/signers/:city", (req, res) => {
+    // console.log("req.session at /city:", req.session);
+    console.log("req.params at /city:", req.params);
+    const { userId } = req.session;
+    const { city } = req.params;
+
+    console.log("city:", city);
+
+    db.getSignersByCity(city)
+        .then((results) => {
+            console.log("city results.rows[0]:", results.rows[0]);
+        })
+        .catch((err) => {
+            console.log("error with getSIgnersbyCity()", err);
+        });
+    // if (userId) {
+    //     res.redirect("/petition");
+    // } else {
+    //     res.render("login", {});
+    // }
 });
 
 app.get("/profile/edit", (req, res) => {

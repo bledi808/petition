@@ -78,15 +78,6 @@ module.exports.addProfile = (age, city, url, user_id) => {
 
 //////////////////////////////////////// join table queries ////////////////////////////////////////
 
-// signers page:
-// join table using signatures table as the main table
-// conditionally render page based on info provided by user (url, age, city)
-
-// To get this info, we'll have to do a join for 3 tables!
-//////////////// we need signatures b/c it will tell us whether or not the user signed the petition
-//////////////// we need users to get the user's first and last name
-//////////////// we need user_profiles to get the signers age, city, and url (if they provided any)
-
 module.exports.getSigners = () => {
     return db.query(`
     SELECT signatures.signature, users.first, users.last, profiles.age, profiles.city, profiles.url 
@@ -98,6 +89,20 @@ module.exports.getSigners = () => {
     `);
 };
 
+module.exports.getSignersByCity = (city) => {
+    return db.query(
+        `
+    SELECT signatures.signature, users.first, users.last, profiles.age, profiles.city, profiles.url
+    FROM signatures
+    JOIN users
+    ON users.id = signatures.user_id
+    LEFT OUTER JOIN profiles
+    ON users.id = profiles.user_id
+    WHERE LOWER(profiles.city) = LOWER($1);
+    `,
+        [city]
+    );
+};
 module.exports.getProfile = (user_id) => {
     return db.query(
         `
