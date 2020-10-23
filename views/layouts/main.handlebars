@@ -7,13 +7,29 @@
     <title>petition ✍🏼</title>
 </head>
 <body>
-    <form method="POST" action='/logout'>
-        <button>Logout</button> 
-        {{>csrf}}    
-    </form>
-    {{{body}}}
+    {{!-- <div class="div container"> // add this if needed later to use display grid and fill in space b/w header ad footer with main body --}}
+    <header>
+        <div class="logo-container">
+            <div id="logo" style="font-size:larger">
+                Meta-Petition ✍🏼
+            </div>
+        </div>
+        <div class="account-header">
+            <div id="user-name">
+                Name
+            </div>
+            <div id="">
+                <a id="account"href="/profile/edit" style="text-decoration:none; color">Profile</a>
+            {{>navButton login=true}}  
+    </header>
+    <main>
+        {{{body}}}
+    </main>
+    <footer>
+        © Meta-Petition - a petition to rule all petitions; a petition for the sake of it
+    </footer>
+    {{!-- </div> --}}
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script src="script.js"></script>
 </body>
-<footer>© this petition is sponsored by the good people at arbeits agentur</footer>
 </html>

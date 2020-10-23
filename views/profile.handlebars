@@ -1,4 +1,4 @@
-<div class="profile-form" style="margin:10%">
+<div class="petition-container">
     <form method="POST">    
         <h4 style="margin-bottom:1%">Tell us about yourself</h4>
             <div class="form-layout">   
@@ -8,7 +8,7 @@
                 <span></br>City</span></br>
                     <input type="text" id="city" name="city" placeholder="type city..." style="margin:1% 0">
                 <span></br>Homepage</span></br>
-                    <input type="text" id="url" name="url" placeholder="type homepage..." style="margin:1% 0">
+                    <input type="text" id="url" name="url" placeholder="type homepage..." pattern="https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&amp;//=]" style="margin:1% 0">
             {{>csrf}}
         <div><button name="submit" id="submit">Continue</button></div>           
     </form>

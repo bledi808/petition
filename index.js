@@ -286,25 +286,30 @@ app.get("/petition/signers", (req, res) => {
 });
 
 app.get("/petition/signers/:city", (req, res) => {
-    // console.log("req.session at /city:", req.session);
+    console.log("req.session at /city:", req.session);
     console.log("req.params at /city:", req.params);
-    const { userId } = req.session;
+    const { userId, signed } = req.session;
     const { city } = req.params;
 
     console.log("city:", city);
-
-    db.getSignersByCity(city)
-        .then((results) => {
-            console.log("city results.rows[0]:", results.rows[0]);
-        })
-        .catch((err) => {
-            console.log("error with getSIgnersbyCity()", err);
-        });
-    // if (userId) {
-    //     res.redirect("/petition");
-    // } else {
-    //     res.render("login", {});
-    // }
+    if (userId) {
+        if (signed) {
+            db.getSignersByCity(city)
+                .then(({ rows }) => {
+                    console.log("city results.rows[0]:", rows);
+                    res.render("city", {
+                        rows,
+                    });
+                })
+                .catch((err) => {
+                    console.log("error with getSIgnersbyCity()", err);
+                });
+        } else {
+            res.redirect("/petition");
+        }
+    } else {
+        res.redirect("/register");
+    }
 });
 
 app.get("/profile/edit", (req, res) => {

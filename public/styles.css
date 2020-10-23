@@ -4,39 +4,103 @@
 }
 
 body {
-    background-color: lightsteelblue;
-    margin: 0;
+    /* border: 2px blue solid; */
+    background-color: rgba(123, 123, 123, 0.3);
+    margin: 0 20%;
     height: 100vh;
-    width: 100vw;
+    font-family: "roboto", sans-serif;
+    color: #383838;
+    display: grid;
+    grid-template-rows: 36px 1fr 4%;
+    border-left: 1px #383838 solid;
+    box-shadow: 6px 6px 5px 1px rgba(158, 158, 162, 0.5);
 }
 
-.container {
-    margin-left: 50%;
-    transform: translateX(-50%);
-    /* align-self: auto; */
-    /* border: 1px darkgreen solid; */
+/* HEADER */
+
+header {
+    border-bottom: 1px #383838 solid;
     background-color: whitesmoke;
-    width: 600px;
-    height: 100%;
+    padding-top: 6px;
+    display: flex;
+    justify-content: space-between;
+    font-size: large;
+    text-shadow: 3px 2px 2px rgba(0, 0, 0, 0.3);
+}
+
+.account-header {
+    /* border: 1px red solid; */
+    display: flex;
+    justify-content: space-around;
+    padding-top: 3px;
+}
+
+#logo {
+    /* border: 1px black solid; */
+    color: #383838;
+    margin-left: 5%;
+    width: 100%;
+    width: 100%;
+}
+
+button {
+    /* border: 1px red solid; */
+    background-color: whitesmoke;
+    padding: 0 10px;
+    color: tomato;
+}
+
+button:hover {
+    /* filter: grayscale(100%); */
+    cursor: pointer;
+    color: grey;
+    /* background-color: red; */
+}
+
+#user-name {
+    /* border: 1px black solid; */
+    padding: 0 10px;
+}
+
+#user-name:hover {
+    /* filter: grayscale(100%); */
+    cursor: default;
+}
+#account {
+    /* border: 1px black solid; */
+    padding: 0 10px;
+    color: blue;
+}
+#account:hover {
+    /* filter: grayscale(100%); */
+    cursor: pointer;
+    color: green;
+}
+
+/* /PETITION CONTAINER */
+
+.petition-container {
+    /* border: 1px darkgreen solid; */
+    background-color: mintcream;
     display: flex;
     flex-direction: column;
     align-items: center;
-    font-family: "roboto", sans-serif;
+    height: 100%;
 }
 
 .petition-header {
     /* border: 1px #383838 solid; */
-    font-size: x-large;
+    margin-top: 3%;
+    font-size: larger;
     color: #383838;
-    font-family: "roboto", sans-serif;
     /* transition: 0.1s cubic-bezier(0.44, 0.13, 0.48, 0.87); */
     text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.3);
 }
 
 .hero-container {
-    margin-top: 3%;
-    width: 400px;
-    height: 400px;
+    margin-top: 2%;
+    width: 300px;
+    height: 300px;
     box-shadow: 6px 6px 5px 1px rgba(158, 158, 162, 0.5);
 }
 
@@ -46,52 +110,56 @@ img {
 }
 
 .form {
-    margin-top: 3%;
-    width: 450px;
-    height: 100%;
-    margin-bottom: 3%;
+    margin: 3%;
+}
 
-    /* border: 1px blue solid; */
+#sign-petition {
+    margin: 0;
 }
 
 canvas {
-    /* width: 300px;
-    height: 100px; */
-    border: 1px lightslategrey solid;
+    border-top: 1px #383838 solid;
+    border-left: 1px #383838 solid;
     background-color: white;
+    box-shadow: 4px 4px 3px 0px rgba(158, 158, 162, 0.5);
 }
-button {
-    margin-top: 1em;
-    width: 20%;
+
+#submit-sig {
+    box-shadow: 4px 4px 3px 0px rgba(158, 158, 162, 0.5);
+    border: none;
+    background-color: rgb(51, 133, 51);
+    font-size: large;
+    color: white;
+    margin-top: 1%;
+    padding: 2px 1% 0 1%;
+    float: right;
 }
 
 footer {
-    margin-top: 1%;
-    margin-left: 27%;
+    height: 100%;
+    padding: 1% 0 0 1%;
+    border-top: 1px #383838 solid;
+    background-color: whitesmoke;
+    font-size: medium;
+    color: #383838;
 }
 
-span {
-    font-size: small;
+/* other stylings mainly for FORMS */
+
+.input-fields {
+    border: 1px blue solid;
+    padding-top: 1px;
+    width: 40%;
 }
 
 .form-layout {
     display: flex;
     flex-direction: row;
+    border: 1px pink solid;
 }
-
-.input-fields {
-    /* border: 1px blue solid; */
-    padding-top: 1px;
-    width: 40%;
-}
-.input-canvas {
-    /* border: 1px blue solid; */
-    width: 60%;
-}
-
 #firstname,
 #surname {
     padding-bottom: 2%;
     border-radius: 0px;
-    border: 1px lightslategrey solid;
+    border: 1px #383838 solid;
 }

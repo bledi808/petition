@@ -1,9 +1,8 @@
 // event handlers
 const canvas = $("#canvas");
 const ctx = canvas[0].getContext("2d");
-const submitButton = $("#submit");
+const submitButton = $("#submit-sig");
 const signatureInput = $("#signature");
-// const canvasVanilla = document.getElementById("canvas");
 
 canvas.on("mousedown", (e) => {
     let x = e.clientX - canvas.offset().left;
@@ -20,8 +19,8 @@ canvas.on("mousedown", (e) => {
         let y = e.clientY - canvas.offset().top;
         ctx.lineTo(x, y);
         ctx.stroke();
-        ctx.strokeStyle = "blue";
-        ctx.lineWidth = 2;
+        ctx.strokeStyle = "magenta";
+        ctx.lineWidth = 1;
         canvas.on("mouseup", function () {
             canvas.off("mousemove", drawSig);
         });

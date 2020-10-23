@@ -1,0 +1,21 @@
+<div class="petition-container">
+    <h1 class="petition-header">Thank you again!</h1>
+    {{!-- <div class="signed"> --}}
+    <h3>Local comrades include: </br> Watch out for them at your local supermarket and give them a knowing smile:</h3>
+            <div>
+                <h3>
+                {{#rows}}
+                    {{#if url}}
+                        <a href="{{url}}" style="padding:2px 3px; text-decoration: none; background-color: rgba(25, 25, 176, 0.774); color:whitesmoke">{{first}} {{last}}</a>
+                    {{else}}   
+                        <a style="padding:2px 3px; text-decoration: none; background-color: rgba(140, 86, 38, 0.774); color:whitesmoke">{{first}} {{last}}</a>
+                    {{/if}} 
+                    {{#if age}}
+                        <a style="padding:2px 3px; background-color: tomato; color:whitesmoke">{{age}}</a>
+                    {{/if}} 
+                        {{!-- <a style="padding:2px 3px;text-decoration: none; background-color: rgb(76, 155, 76); color:whitesmoke">{{city}}</a> --}}
+                </h3> 
+                {{/rows}}
+            </div>
+     {{!-- </div> --}}
+</div>

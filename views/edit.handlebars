@@ -1,4 +1,4 @@
-<div class="edit-form" style="margin:10%">
+<div class="petition-container">
     <form method="POST">    
         <h4 style="margin-bottom:1%">Edit your profile</h4>
             <div class="form-layout">   
@@ -17,7 +17,7 @@
                 <span></br>City</span></br>
                     <input type="text" id="city" name="city" placeholder="type city..." value="{{city}}" style="margin:1% 0">
                 <span></br>Homepage</span></br>
-                    <input type="text" id="url" name="url" placeholder="type homepage..." value="{{url}}" style="margin:1% 0">
+                    <input type="text" id="url" name="url" placeholder="type homepage..." value="{{url}}" style="margin:1% 0" pattern="https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&amp;//=]">
                 <div><button name="submit" id="submit">Update</button></div>
                 {{/rows}}
                 {{>csrf}}
