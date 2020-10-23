@@ -251,7 +251,6 @@ app.get("/petition/signed", (req, res) => {
             db.showSignature(userId).then((arg) => {
                 const signature = arg.rows[0].signature;
                 db.getCurrentSigner(userId).then(({ rows }) => {
-                    // console.log("rows:", rows);
                     res.render("signed", {
                         rows,
                         signature,

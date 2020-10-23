@@ -1,0 +1,37 @@
+{{#if login}}
+<header>
+    <div class="logo-container">
+        <div id="logo" style="font-size:larger">
+            Meta-Petition ✍🏼
+        </div>
+    </div>       
+    <div class="account-header">
+        <div id="user-name">
+            {{!-- {{#rows}} --}}
+                {{!-- {{first}} --}}
+            {{!-- {{/rows}} --}}
+        </div>
+        <div>
+            <a id="account"href="/profile/edit" style="text-decoration:none; color">Profile</a>
+        </div>            
+        <form method="POST" action='/logout'>
+            <button id="nav-button" style="border:none; background-color: none;font-size:large; ">Logout</button> 
+            {{>csrf}}    
+        </form>
+    </div>
+</header>
+{{else}}
+<header>
+    <div class="logo-container">
+        <div id="logo" style="font-size:larger">
+            Meta-Petition ✍🏼
+        </div>
+    </div>       
+    </div>            
+        <form method="POST" action='/login'>
+            <button id="nav-button" style="border:none; background-color: none;font-size:large; ">Login</button> 
+            {{>csrf}}    
+        </form>
+    </div>
+</header>
+{{/if}}

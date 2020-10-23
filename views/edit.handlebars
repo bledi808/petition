@@ -1,3 +1,21 @@
+<header>
+    <div class="logo-container">
+        <div id="logo" style="font-size:larger">
+            Meta-Petition ✍🏼
+        </div>
+    </div>       
+    <div class="account-header">
+        <div id="user-name">
+             {{#rows}}
+                {{first}}
+            {{/rows}}
+        </div>
+        <form method="POST" action='/logout'>
+            <button id="nav-button" style="border:none; background-color: none;font-size:large; ">Logout</button> 
+            {{>csrf}}    
+        </form>
+    </div>
+</header>
 <div class="petition-container">
     <form method="POST">    
         <h4 style="margin-bottom:1%">Edit your profile</h4>

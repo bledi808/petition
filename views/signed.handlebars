@@ -1,37 +1,40 @@
+{{>header login=true}}
 <div class="petition-container">
+
+    <div style="width: 500px">
     {{#rows}}
-    <h2 id="thankyou" style="margin-top: 20%;">
-        Thank you for your support
-            <a style="color: tomato">
+    <p id="thankyou" style="margin-top: 20%;">
+        Thank you comrade
+            <a style="color: green">
                 {{first}}
-            </a>
-                !   
-    </h2>
+            </a></p>
     {{/rows}}
-    <div style="width: 350px; height: 100px; border: 1px darkgrey solid; background: whitesmoke">
+    </div>
+    <div id="sig-box" style="width: 500px; height: 130px;">
         <img style="width: 100%; height: 100%" src="{{signature}}">
     </div>
-    <h1 style="margin-top: 6%;font-size:50px; color: blue">
-        {{count}}
-    </h1>
-    <h3 style="margin-top: -2%;">
-        other people care about this issue.
-    </h3>  
-    <a href="/petition/signers" style="text-decoration: none">
-        <h4 style="margin-top: 0; background-color: seagreen; padding:1% 2%;color:white; width:220px">
-            See who else signed up
-        </h4>
-    </a>
-    <a href="/profile/edit" style="text-decoration: none">
-        <h4 style="margin-top: 0; background-color: seagreen; padding:1% 2%;color:white; width:220px">
-            Update your profile
-        </h4>
-    </a>
+    <div style="width: 500px">
     <form method="POST" action='/delete/signature'>
-        <button style="margin-top: 0; border: none; background-color: seagreen; padding:1% 2%;color:white; width:220px">
-            Delete your signature
+        <button id="delete-sig">
+            Delete signature
         </button>
     {{>csrf}}    
+    </div>
     </form>
-
+    <h1 id="count">
+        {{count}}
+    </h1>
+    <p style="margin-top: -2%; font-size: large">
+        other people gave their fake signatures.
+    </p> 
+    <div id="actions" style="width: 500px">
+    <a href="/petition/signers" style="text-decoration: none">
+        <p id="signers"> See who else signed up</p>
+    </a>
+    <a href="/profile/edit" style="text-decoration: none">
+        <p id="update">
+            Update your profile
+        </p>
+    </a>
+    </div>
 </div>

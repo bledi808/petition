@@ -1,4 +1,16 @@
- <div class="petition-container">
+<header>
+    <div class="logo-container">
+        <div id="logo" style="font-size:larger">
+            Meta-Petition ✍🏼
+        </div>
+    </div>       
+    <div style="margin-top:4px">
+        <form action='/login'>
+            <button id="nav-button" style="border:none; background-color: none;font-size:large; ">Login</button> 
+            {{!-- {{>csrf}}     --}}
+        </form>
+    </div>
+</header> <div class="petition-container">
         <form method="POST">
             <h4 style="margin-bottom:1%">Register with your details below</h4>
                 <div class="form-layout">   

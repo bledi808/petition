@@ -19,7 +19,7 @@ canvas.on("mousedown", (e) => {
         let y = e.clientY - canvas.offset().top;
         ctx.lineTo(x, y);
         ctx.stroke();
-        ctx.strokeStyle = "magenta";
+        ctx.strokeStyle = "red";
         ctx.lineWidth = 1;
         canvas.on("mouseup", function () {
             canvas.off("mousemove", drawSig);
