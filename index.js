@@ -52,6 +52,20 @@ app.get("/register", (req, res) => {
     }
 });
 
+// const validateUrl = (url) => {
+//     if (url) {
+//         if (!url.startsWith("http://") && !url.startsWith("https://")) {
+//             if (url.startsWith("www")) {
+//                 validUrl = "http://" + url;
+//                 return validUrl;
+//             } else {
+//                 field = `make sure your address begins with "http://" or "https://"`;
+//                 return field;
+//             }
+//         }
+//     }
+// };
+
 app.post("/register", (req, res) => {
     console.log("req.body in /register:", req.body);
     const { firstname, surname, email, password } = req.body;
