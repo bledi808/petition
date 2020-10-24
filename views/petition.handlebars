@@ -10,11 +10,11 @@
         <form method="POST">
             <span id="sign-petition"style="margin-bottom:1%">Draw signature below:</span>
                 <div class="input-canvas">
-                    <canvas id="canvas" style=""width="500""; height="130"" ></canvas>
                     <input type="hidden" id="signature" name="signature">
+                    <canvas name="canvas" id="canvas" width="500" height="130" ></canvas>
+                    {{>csrf}}
                 </div>
-                {{>csrf}}
-            <div><button name="submit" id="submit-sig">Submit signature</button></div>
+            <div><button name="submit-sig" id="submit-sig">Submit signature</button></div>
         </form>
         {{#if empty}}
         <p style="color: tomato; margin-top:1%">Please ensure you have filled in all fields! </p>  

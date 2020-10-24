@@ -1,25 +1,23 @@
 {{>header login=true}}
+
 <div class="petition-container">
-    <h1 class="petition-header">Thank you again!</h1>
-    {{!-- <div class="signed"> --}}
-    <h3>Other comrades include:</h3>
-            <div>
+    <p class="thanks-again">Thank you again!</h1>
+    <p class="comradery">You are in good company, other comrades include:</p>
+            <div class="comrades">
                 {{#rows}}
-                <h3>
+                <p>
                     {{#if url}}
-                        <a href="{{url}}" style="padding:2px 1em; text-decoration: none; background-color: rgba(25, 25, 176, 0.774); color:whitesmoke">{{first}} {{last}}</a>
+                        <a class="comrade-name" href="{{url}}" style="text-decoration: none">{{first}} {{last}}</a>
                     {{else}}   
-                        <a style="padding:2px 1em; text-decoration: none; background-color: rgba(140, 86, 38, 0.774); color:whitesmoke">{{first}} {{last}}</a>
+                        <a class="comrade-no-url" style="text-decoration: none">{{first}} {{last}}</a>
+                    {{/if}}
+                    {{#if city}}
+                        <a class="comrade-city" href="/petition/signers/{{city}}" style="text-decoration: none">{{city}}</a>
                     {{/if}} 
                     {{#if age}}
-                        <a style="background-color: tomato; color:whitesmoke; padding:2px 1em">{{age}}</a>
+                        <a class="comrade-age">{{age}}</a>
                     {{/if}} 
-                
-                    {{#if city}}
-                        <a href="/petition/signers/{{city}}" style="padding:2px 1em; text-decoration: none; background-color: rgb(76, 155, 76); color:whitesmoke">{{city}}</a>
-                    {{/if}} 
-                </h3> 
+                </p> 
                 {{/rows}}
             </div>
-     {{!-- </div> --}}
 </div>

@@ -66,7 +66,7 @@ button:hover {
 #account {
     /* border: 1px black solid; */
     padding: 0 10px;
-    color: blue;
+    color: mediumblue;
 }
 #account:hover {
     /* filter: grayscale(100%); */
@@ -115,8 +115,8 @@ img {
 }
 
 canvas {
-    border-top: 1px #383838 solid;
-    border-left: 1px #383838 solid;
+    border-top: 1px grey solid;
+    border-left: 1px grey solid;
     background-color: white;
     box-shadow: 4px 4px 3px 0px rgba(158, 158, 162, 0.5);
 }
@@ -165,7 +165,7 @@ footer {
     width: 142px;
     background-color: tomato;
     font-size: large;
-    color: white;
+    color: mintcream;
     margin-top: 2%;
     padding: 2px 1% 0 1%;
     justify-self: right;
@@ -176,10 +176,9 @@ footer {
     margin-top: 6%;
     font-size: 46px;
     padding: 0 1%;
-    background-color: rgb(83, 83, 235);
+    background-color: royalblue;
     box-shadow: 10px 10px 2px rgba(0, 0, 0, 0.3);
-
-    color: white;
+    color: mintcream;
 }
 #actions {
     margin-top: 12%;
@@ -199,7 +198,7 @@ footer {
     /* border: 1px red solid; */
     margin: 0;
     font-size: large;
-    color: blue;
+    color: mediumblue;
     text-shadow: 3px 2px 2px rgba(0, 0, 0, 0.3);
 }
 
@@ -211,10 +210,60 @@ footer {
     color: purple;
 }
 
+/* Signers page */
+
+.thanks-again {
+    /* border: 1px #383838 solid; */
+    margin: 4% 0 2% 0;
+    font-size: x-large;
+    color: midnightblue;
+    text-shadow: 5px 5px 2px rgba(0, 0, 0, 0.3);
+}
+
+.comradery {
+    margin: 1% 15% 2% 15%;
+    text-align: center;
+    font-size: large;
+    color: midnightblue;
+    text-shadow: 3px 3px 4px rgba(0, 0, 0, 0.3);
+}
+.comrades {
+    border-top: 1px #383838 solid;
+    border-left: 1px #383838 solid;
+    background-color: #fafad2;
+    box-shadow: 4px 4px 3px 0px rgba(158, 158, 162, 0.5);
+    padding-left: 2%;
+    margin-bottom: 4%;
+    width: 53%;
+    font-size: large;
+    color: green;
+    text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
+    /* padding: 2px 1em; */
+}
+
+.comrade-name {
+    padding: 0px 5px;
+    color: blue;
+}
+
+.comrade-no-url {
+    padding: 0px 5px;
+    color: #383838;
+}
+
+.comrade-age {
+    padding: 0px 5px;
+    color: tomato;
+}
+.comrade-city {
+    padding: 0px 5px;
+    color: green;
+}
+
 /* other stylings mainly for FORMS */
 
 .input-fields {
-    border: 1px blue solid;
+    border: 1px royalblue solid;
     padding-top: 1px;
     width: 40%;
 }

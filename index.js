@@ -206,6 +206,7 @@ app.post("/profile", (req, res) => {
 
 app.get("/petition", (req, res) => {
     console.log("req.session at /petition:", req.session);
+    console.log("req.body at /petition:", req.body);
     const { userId } = req.session;
 
     if (userId) {
@@ -225,6 +226,9 @@ app.get("/petition", (req, res) => {
 app.post("/petition", (req, res) => {
     const { signature } = req.body;
     const { userId } = req.session;
+    console.log("req.session at POST /petition:", req.session);
+    console.log("req.body at POST /petition:", req.body);
+
     if (signature !== "") {
         db.addSignature(userId, signature)
             .then(() => {
@@ -242,7 +246,8 @@ app.post("/petition", (req, res) => {
 });
 
 app.get("/petition/signed", (req, res) => {
-    //if cookie set, countSignatures and render the row count and the current signer name in "/signed"
+    console.log("req.session at /signed:", req.session);
+    console.log("req.body at /signed:", req.body);
     const { userId, signed } = req.session;
     console.log("signed cookie at /signed: ", signed);
     if (signed) {
