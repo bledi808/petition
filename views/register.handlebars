@@ -1,3 +1,4 @@
+
 <header>
     <div class="logo-container">
         <div id="logo" style="font-size:larger">
@@ -7,29 +8,33 @@
     <div style="margin-top:4px">
         <form action='/login'>
             <button id="nav-button" style="border:none; background-color: none;font-size:large; ">Login</button> 
-            {{!-- {{>csrf}}     --}}
+            {{>csrf}}    
         </form>
     </div>
-</header> <div class="petition-container">
-        <form method="POST">
-            <h4 style="margin-bottom:1%">Register with your details below</h4>
-                <div class="form-layout">   
-                <div class="input-fields">
-                    <span>Name</span></br>
-                        <input type="text" id="firstname" name="firstname" placeholder="type name..." style="margin:1% 0">
-                    <span></br>Surname</span></br>
-                        <input type="text" id="surname" name="surname" placeholder="type surame..." style="margin:1% 0">
-                    <span></br>Email</span></br>
-                        <input type="text" id="surname" name="email" placeholder="type email..." style="margin:1% 0">
-                    <span></br>Password</span></br>
-                        <input type="text" id="surname" name="password" placeholder="type password..." style="margin:1% 0">
+</header> 
+<div class="petition-container">
+    <form id="register-container" method="POST">
+        <p style="margin:0 0 1% 2%; text-shadow: 1px 1px 1px darkgrey; color: midnightblue">
+            Register with your details 
+        </p>
+        <div class="form-layout">   
+            <div class="input-fields">
+                <input class="reg-input" type="text" id="firstname" name="firstname" placeholder="Name">
+                <input class="reg-input" type="text" id="surname" name="surname" placeholder="Surame">
+                <input  class="reg-input" type="email" id="surname" name="email" placeholder="Email">
+                <input  class="reg-input" type="password" id="surname" name="password" placeholder="Password">
                 {{>csrf}}
-                <div><button name="submit" id="submit">Register</button></div>
-            <h4 style="margin-top: 5%; color:black; width:250px">
-            If already registered, log in <a href="/login" style="text-decoration: none; color: blue">here</a>!
-            <h4>            
-        </form>
-        {{#if empty}}
-        <p style="color: tomato; margin-top:1%">To register, we require you to fill in all fields! </p>  
-        {{/if}}
-    </div>
+            <div id="reg-actions">
+                <button name="submit" id="submit-reg">Register</button>
+                <span id="already-reg">
+                    Login <a href="/login" style="text-decoration: none; color: tomato">here</a> instead!
+                <span>
+            </div>
+            </div>
+        </div>                
+    </form>
+    {{#if empty}}
+    <p style="color: red; margin-top:1%">Please fill in all fields to register!</p>  
+    {{/if}}
+</div>
+

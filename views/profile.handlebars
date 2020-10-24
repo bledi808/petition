@@ -12,17 +12,22 @@
     </div>
 </header>
 <div class="petition-container">
-    <form method="POST">    
-        <h4 style="margin-bottom:1%">Tell us about yourself</h4>
-            <div class="form-layout">   
+    <form method="POST" id="register-container">    
+        <p style="margin:0 0 1% 2%; text-shadow: 1px 1px 1px darkgrey; color: midnightblue">
+            Tell us about yourself
+        </p>
+        <div class="form-layout">   
             <div class="input-fields">
-                <span>Age</span></br>
-                    <input  id="age" name="age" placeholder="type age..." style="margin:1% 0">
-                <span></br>City</span></br>
-                    <input type="text" id="city" name="city" placeholder="type city..." style="margin:1% 0">
-                <span></br>Homepage</span></br>
-                    <input type="text" id="url" name="url" placeholder="type homepage..." pattern="https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&amp;//=]" style="margin:1% 0">
+                    <input class="reg-input" id="age" name="age" placeholder="Age">
+                    <input class="reg-input" type="text" id="city" name="city" placeholder="City" style="margin:1% 0">
+                    <input class="reg-input"type="text" id="url" name="url" placeholder="Homepage" pattern="https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&amp;//=]" style="margin:1% 0">
             {{>csrf}}
-        <div><button name="submit" id="submit">▶ Continue</button></div>           
+            <div id="reg-actions">
+                <button name="submit" id="submit-reg">
+                    Continue
+                </button>
+            </div>  
+            </div>
+            </div>         
     </form>
 </div>

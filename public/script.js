@@ -2,8 +2,7 @@
 const canvas = $("#canvas");
 const ctx = canvas[0].getContext("2d");
 const submitButton = $("#submit-sig");
-// const signatureInput = $("#signature");
-const signatureInput = $('input[name="signature"]');
+const signatureInput = $("#signature");
 
 canvas.on("mousedown", (e) => {
     let x = e.clientX - canvas.offset().left;

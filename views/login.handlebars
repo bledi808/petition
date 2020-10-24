@@ -12,21 +12,25 @@
     </div>
 </header>
 <div class="petition-container">
-        <form method="POST">
-            <h4 style="margin-bottom:1%">Login below:</h4>
-                <div class="form-layout">   
+    <form method="POST" id="register-container">
+        <p style="margin:0 0 1% 2%; text-shadow: 1px 1px 1px darkgrey; color: midnightblue">
+            Login below
+        </p>
+            <div class="form-layout">   
                 <div class="input-fields">
-                    <span></br>Email</span></br>
-                        <input type="text" id="surname" name="email" placeholder="type email..." style="margin:1% 0">
-                    <span></br>Password</span></br>
-                        <input type="text" id="surname" name="password" placeholder="type password..." style="margin:1% 0">
-                {{>csrf}}
-            <div><button name="submit" id="submit">Log in</button></div>
-            <h4 style="margin-top: 5%; color:black; width:250px">
-            If you don't have an account yet, register <a href="/register" style="text-decoration: none; color: blue">here</a>!
-            <h4>         
-        </form>
-        {{#if empty}}
-        <p style="color: tomato; margin-top:1%">These credentials appear incorrect!</p>  
-        {{/if}}
-    </div>
+                    <input  class="reg-input" type="email" id="surname" name="email" placeholder="Email">
+                    <input  class="reg-input" type="password" id="surname" name="password" placeholder="Password">
+                    {{>csrf}}
+                <div id="reg-actions">
+                    <button name="submit" id="submit-reg">Login</button>
+                    <span id="already-reg">
+                        Register <a href="/register" style="text-decoration: none; color: tomato">here</a> instead!
+                    </span>
+                </div> 
+            </div> 
+        </div>         
+    </form>
+    {{#if empty}}
+    <p style="color: tomato; margin-top:1%">These credentials appear incorrect!</p>  
+    {{/if}}
+</div>

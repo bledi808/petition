@@ -2,23 +2,23 @@
 <div class="petition-container">
 
     <div style="width: 500px">
-    {{#rows}}
-    <p id="thankyou" style="margin-top: 20%;">
-        Thank you comrade
-            <a style="color: green">
-                {{first}}
-            </a></p>
-    {{/rows}}
+        {{#rows}}
+        <p id="thankyou" style="margin-top: 20%;">
+            Thank you comrade
+                <a style="color: green">
+                    {{first}}
+                </a></p>
+        {{/rows}}
     </div>
     <div id="sig-box" style="width: 500px; height: 130px;">
         <img style="width: 100%; height: 100%" src="{{signature}}">
     </div>
     <div style="width: 500px">
-    <form method="POST" action='/delete/signature'>
-        <button id="delete-sig">
-            Delete signature
-        </button>
-    {{>csrf}}    
+        <form method="POST" action='/delete/signature'>
+            <button id="delete-sig">
+                Delete signature
+            </button>
+        {{>csrf}}    
     </div>
     </form>
     <h1 id="count">

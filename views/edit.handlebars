@@ -17,33 +17,30 @@
     </div>
 </header>
 <div class="petition-container">
-    <form method="POST">    
-        <h4 style="margin-bottom:1%">Edit your profile</h4>
-            <div class="form-layout">   
+    <form method="POST" id="register-container" style="margin-top:13%">    
+        <p style="margin:0 0 1% 2%; text-shadow: 1px 1px 1px darkgrey; color: midnightblue">
+            Edit your profile
+        </p>
+        <div class="form-layout">   
             <div class="input-fields">
                 {{#rows}}
-                <span>Name</span></br>
-                    <input type="text" id="firstname" name="firstname" placeholder="type name..." value="{{first}}" style="margin:1% 0">
-                <span></br>Surname</span></br>
-                    <input type="text" id="surname" name="surname" placeholder="type surame..." value="{{last}}" style="margin:1% 0">
-                <span></br>Email</span></br>
-                    <input type="text" id="surname" name="email" placeholder="type email..." value="{{email}}" style="margin:1% 0">
-                <span></br>Password</span></br>
-                    <input type="text" id="surname" name="password" placeholder="type password..." style="margin:1% 0">
-                <span></br>Age</span></br>
-                    <input type="text" id="age" name="age" placeholder="type age..." value="{{age}}" style="margin:1% 0">
-                <span></br>City</span></br>
-                    <input type="text" id="city" name="city" placeholder="type city..." value="{{city}}" style="margin:1% 0">
-                <span></br>Homepage</span></br>
-                    <input type="text" id="url" name="url" placeholder="type homepage..." value="{{url}}" style="margin:1% 0" pattern="https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&amp;//=]">
-                <div><button name="submit" id="submit">Update</button></div>
+                <input class="reg-input" type="text" id="firstname" name="firstname" placeholder="Name" value="{{first}}">
+                <input class="reg-input" type="text" id="surname" name="surname" placeholder="Surame" value="{{last}}" >
+                <input  class="reg-input" type="email" id="surname" name="email" placeholder="Email" value="{{email}}">
+                <input  class="reg-input" type="password" id="surname" name="password" placeholder="Password">
+                <input class="reg-input" id="age" name="age" placeholder="Age" value="{{age}}">
+                <input class="reg-input" type="text" id="city" name="city" placeholder="City" style="margin:1% 0" value="{{city}}">
+                <input class="reg-input"type="text" id="url" name="url" placeholder="Homepage" pattern="https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&amp;//=]" style="margin:1% 0" value="{{url}}">                      
                 {{/rows}}
                 {{>csrf}}
-                
+                <div id="reg-actions">
+                    <button name="submit" id="submit-reg">Update</button>
+                </div>
+                </div>
+            </div>  
     </form>
         {{!-- {{#if empty}}
             <p style="color: tomato; margin-top:1%">Name, Surname and Email fields must be populated! </p>  
-        {{/if}} --}}
-        
+        {{/if}} --}} 
         {{>popup}}
 </div>

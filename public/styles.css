@@ -132,6 +132,10 @@ canvas {
     float: right;
 }
 
+#submit-sig:hover {
+    color: yellow;
+}
+
 footer {
     /* height: 1em; */
     padding: 2px 1% 0 1%;
@@ -260,22 +264,71 @@ footer {
     color: green;
 }
 
-/* other stylings mainly for FORMS */
-
-.input-fields {
-    border: 1px royalblue solid;
-    padding-top: 1px;
-    width: 40%;
+/* Register page */
+#register-container {
+    margin: 20%;
+    font-size: larger;
 }
 
+/* other stylings mainly for FORMS */
 .form-layout {
     display: flex;
-    flex-direction: row;
-    border: 1px pink solid;
+    flex-direction: column;
+    /* border: 2px red solid; */
+    margin-top: 3%;
+    font-size: larger;
 }
+
+.input-fields {
+    display: flex;
+    flex-direction: column;
+    /* border: 2px royalblue solid; */
+    padding: 5px;
+    padding-top: 5px;
+}
+.reg-input {
+    height: 2em;
+    width: 20em;
+    margin: 5px 0;
+    font-family: "roboto", sans-serif;
+    color: #383838;
+    border: none;
+    padding: 10px;
+    background-color: cornsilk;
+    border-bottom: 1px #383838 solid;
+    box-shadow: 1px 1px 1px 0px rgba(158, 158, 162, 0.5);
+
+    /* margin: 10px; */
+}
+
+#submit-reg {
+    box-shadow: 4px 4px 3px 0px rgba(158, 158, 162, 0.5);
+    border: none;
+    background-color: rgb(51, 133, 51);
+    font-size: large;
+    color: white;
+    /* margin-top: 2%; */
+    padding: 2px 2% 0 2%;
+    float: right;
+}
+#submit-reg:hover {
+    color: yellow;
+}
+#reg-actions {
+    /* border: 1px green solid; */
+    height: 2em;
+    padding-top: 3%;
+}
+#already-reg {
+    font-size: medium;
+    color: royalblue;
+    text-shadow: 1px 1px 1px darkgrey;
+}
+
+/* 
 #firstname,
 #surname {
     padding-bottom: 2%;
     border-radius: 0px;
     border: 1px #383838 solid;
-}
+} */
