@@ -6,7 +6,7 @@
     </div>       
     <div class="account-header">
         <div id="user-name">
-             {{#rows}}
+            {{#rows}}
                 {{first}}
             {{/rows}}
         </div>
@@ -24,13 +24,13 @@
         <div class="form-layout">   
             <div class="input-fields">
                 {{#rows}}
-                <input class="reg-input" type="text" id="firstname" name="firstname" placeholder="Name" value="{{first}}">
-                <input class="reg-input" type="text" id="surname" name="surname" placeholder="Surame" value="{{last}}" >
-                <input  class="reg-input" type="email" id="surname" name="email" placeholder="Email" value="{{email}}">
-                <input  class="reg-input" type="password" id="surname" name="password" placeholder="Password">
-                <input class="reg-input" id="age" name="age" placeholder="Age" value="{{age}}">
-                <input class="reg-input" type="text" id="city" name="city" placeholder="City" style="margin:1% 0" value="{{city}}">
-                <input class="reg-input"type="text" id="url" name="url" placeholder="Homepage" pattern="https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&amp;//=]" style="margin:1% 0" value="{{url}}">                      
+                <input class="reg-input" type="text" id="firstname" name="firstname" placeholder="Name" autocomplete="off" value="{{first}}">
+                <input class="reg-input" type="text" id="surname" name="surname" placeholder="Surame" autocomplete="off" value="{{last}}" >
+                <input class="reg-input" type="email" id="surname" name="email" placeholder="Email" autocomplete="off" value="{{email}}">
+                <input class="reg-input" type="password" id="surname" name="password" placeholder="Password" autocomplete="off">
+                <input class="reg-input" type="text" id="age" name="age" placeholder="Age" autocomplete="off" pattern="^[0-9]*$" value="{{age}}">
+                <input class="reg-input" type="text" id="city" name="city" placeholder="City" style="margin:1% 0" autocomplete="off" pattern="^[a-zA-Z ]+$" value="{{city}}">
+                <input class="reg-input" type="url" id="url" name="url" placeholder="Homepage" autocomplete="off" pattern="https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&amp;//=]" style="margin:1% 0" value="{{url}}">                      
                 {{/rows}}
                 {{>csrf}}
                 <div id="reg-actions">

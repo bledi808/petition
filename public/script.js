@@ -4,6 +4,8 @@ const ctx = canvas[0].getContext("2d");
 const submitButton = $("#submit-sig");
 const signatureInput = $("#signature");
 
+// const canvasVanilla = document.getElementById("canvas");
+
 canvas.on("mousedown", (e) => {
     let x = e.clientX - canvas.offset().left;
     let y = e.clientY - canvas.offset().top;
@@ -29,5 +31,6 @@ canvas.on("mousedown", (e) => {
 
 // upon clicking Submit, set value of the hidden sig input field to canvas drawing
 submitButton.on("click", () => {
+    console.log("signature drawn on canvas:", canvas[0].toDataURL());
     signatureInput.val(canvas[0].toDataURL());
 });
