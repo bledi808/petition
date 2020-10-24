@@ -30,11 +30,15 @@
                     Login <a href="/login" style="text-decoration: none; color: tomato">here</a> instead!
                 <span>
             </div>
+                {{#if empty}}
+                    <p class="error"> Please populate all fields to register!</p>  
+                {{/if}}
+                {{#if email}}
+                    <p class="error"> Email address already taken, try another!</p>  
+                {{/if}}
             </div>
         </div>                
     </form>
-    {{#if empty}}
-    <p style="color: red; margin-top:1%">Please fill in all fields to register!</p>  
-    {{/if}}
+ 
 </div>
 

@@ -20,13 +20,17 @@
             <div class="input-fields">
                 <input class="reg-input" type="text" id="age" name="age" placeholder="Age" autocomplete="off" pattern="^[0-9]*$">
                 <input class="reg-input" type="text" id="city" name="city" placeholder="City" autocomplete="off" pattern="^[a-zA-Z ]+$">
-                <input class="reg-input"type="url" id="url" name="url" placeholder="Homepage" autocomplete="off" pattern="https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&amp;//=]*)">
+                <input class="reg-input" id="url" name="url" placeholder="Homepage" autocomplete="off" >
+                {{!-- <input class="reg-input"type="url" id="url" name="url" placeholder="Homepage" autocomplete="off" pattern="https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&amp;//=]*)"> --}}
                 {{>csrf}}
             <div id="reg-actions">
                 <button type="submit" name="submit" id="submit-reg">
                     Continue
                 </button>
             </div>  
+            {{#if url}}
+            <p class="error" style="">URL should begin with http(s)://...</p>  
+            {{/if}}
             </div>
             </div>         
     </form>

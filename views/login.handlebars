@@ -27,10 +27,13 @@
                         Register <a href="/register" style="text-decoration: none; color: tomato">here</a> instead!
                     </span>
                 </div> 
-            </div> 
+                {{#if empty}}
+                    <p class="error"> Please fill in credentials to login</p>  
+                {{/if}}
+                {{#if login}}
+                    <p class="error">Incorrect email / password combo</p>  
+                {{/if}}
+            </div>
         </div>         
     </form>
-    {{#if empty}}
-    <p style="color: tomato; margin-top:1%">These credentials appear incorrect!</p>  
-    {{/if}}
 </div>

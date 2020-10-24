@@ -39,19 +39,6 @@ app.use(function (req, res, next) {
 
 //////////////////////////////////////// ROUTES ///////////////////////////////////////
 
-app.get("/", (req, res) => {
-    res.redirect("/register");
-});
-
-app.get("/register", (req, res) => {
-    const { userId } = req.session;
-    if (userId) {
-        res.redirect("/petition");
-    } else {
-        res.render("register", {});
-    }
-});
-
 // const validateUrl = (url) => {
 //     if (url) {
 //         if (!url.startsWith("http://") && !url.startsWith("https://")) {
@@ -65,6 +52,19 @@ app.get("/register", (req, res) => {
 //         }
 //     }
 // };
+
+app.get("/", (req, res) => {
+    res.redirect("/register");
+});
+
+app.get("/register", (req, res) => {
+    const { userId } = req.session;
+    if (userId) {
+        res.redirect("/petition");
+    } else {
+        res.render("register", {});
+    }
+});
 
 app.post("/register", (req, res) => {
     console.log("req.body in /register:", req.body);
@@ -95,14 +95,12 @@ app.post("/register", (req, res) => {
                                 "error with storing user credentials",
                                 err
                             );
-                            res.render("register", {
-                                empty: true, //make error msgs more specific to error later
-                            });
+                            res.render("register", {});
                         });
                 } else {
-                    console.log("EMAIL ALREADY IN USE");
+                    console.log("email address is already being used");
                     res.render("register", {
-                        empty: true, // make error msgs more specific to error later/EMAIL IS ALREADY TAKEN/USED
+                        email: true,
                     });
                 }
             })
@@ -110,9 +108,7 @@ app.post("/register", (req, res) => {
                 console.log("error in /register with getPassword()!", err);
             });
     } else {
-        res.render("register", {
-            empty: true, // make error msgs more specific to error later
-        });
+        res.render("register", {});
     }
 });
 
@@ -127,7 +123,7 @@ app.get("/login", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-    const { email, password } = req.body; // user-entered email and password
+    const { email, password } = req.body;
     if (email !== "" && password !== "") {
         db.getPassword(email)
             .then((results) => {
@@ -151,7 +147,7 @@ app.post("/login", (req, res) => {
                             res.redirect("/profile");
                         } else {
                             res.render("login", {
-                                empty: true, // make error msgs more specific to error later
+                                login: true, // make error msgs more specific to error later
                             });
                         }
                     })
@@ -161,14 +157,14 @@ app.post("/login", (req, res) => {
                             err
                         );
                         res.render("login", {
-                            empty: true, // make error msgs more specific to error later
+                            login: true, // make error msgs more specific to error later
                         });
                     });
             })
             .catch((err) => {
                 console.log("error in POST /login with getPassword()", err);
                 res.render("login", {
-                    empty: true, // make error msgs more specific to error later
+                    login: true, // make error msgs more specific to error later
                 });
             });
     } else {
@@ -206,7 +202,8 @@ app.get("/profile", (req, res) => {
 app.post("/profile", (req, res) => {
     const { userId } = req.session;
     const { age, city, url } = req.body;
-
+    // if (url != "") {
+    //     if (url.startsWith("http://") && url.startsWith("https://")) {
     db.addProfile(age, city, url, userId)
         .then(() => {
             req.session.profileCreated = true;
@@ -216,6 +213,15 @@ app.post("/profile", (req, res) => {
             console.log("error with addProfile()", err);
             res.render("profile", {});
         });
+    //     } else {
+    //         console.log("please enter a valid url starting with http(s)://");
+    //         res.render("profile", {
+    //             url: true,
+    //         });
+    //     }
+    // } else {
+    //     res.redirect("/petition");
+    // }
 });
 
 app.get("/petition", (req, res) => {
@@ -372,6 +378,9 @@ app.post("/profile/edit", (req, res) => {
                                         "update to profiles table: ",
                                         rows
                                     );
+                                    // res.render("edit", {
+                                    //     update: true,
+                                    // }); // pup up to confirm update for user
                                 })
                                 .catch((err) => {
                                     console.log(

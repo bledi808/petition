@@ -122,7 +122,7 @@ canvas {
 }
 
 #submit-sig {
-    box-shadow: 4px 4px 3px 0px rgba(158, 158, 162, 0.5);
+    box-shadow: 4px 4px 3px 0px rgba(137, 137, 138, 0.5);
     border: none;
     background-color: rgb(51, 133, 51);
     font-size: large;
@@ -304,6 +304,7 @@ footer {
 #submit-reg {
     box-shadow: 4px 4px 3px 0px rgba(158, 158, 162, 0.5);
     border: none;
+    height: 1.5em;
     background-color: rgb(51, 133, 51);
     font-size: large;
     color: white;
@@ -323,6 +324,19 @@ footer {
     font-size: medium;
     color: royalblue;
     text-shadow: 1px 1px 1px darkgrey;
+}
+
+/* error messages */
+.error {
+    background-color: rgb(248, 119, 96);
+    height: 27px;
+    margin-top: 4%;
+    /* border: 1px deeppink solid; */
+    color: white;
+    /* text-align: center; */
+    font-size: 15px;
+    padding: 2% 0 0 3%;
+    box-shadow: 1px 1px 1px darkgrey;
 }
 
 /* 
