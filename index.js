@@ -85,9 +85,7 @@ app.post("/register", (req, res) => {
                                         "error with storing user info",
                                         err
                                     );
-                                    res.render("register", {
-                                        empty: true, // rerender with error msg /make error msgs more specific to error later
-                                    });
+                                    res.render("register", {});
                                 });
                         })
                         .catch((err) => {
@@ -108,7 +106,9 @@ app.post("/register", (req, res) => {
                 console.log("error in /register with getPassword()!", err);
             });
     } else {
-        res.render("register", {});
+        res.render("register", {
+            empty: true,
+        });
     }
 });
 
@@ -203,25 +203,25 @@ app.post("/profile", (req, res) => {
     const { userId } = req.session;
     const { age, city, url } = req.body;
     // if (url != "") {
-    //     if (url.startsWith("http://") && url.startsWith("https://")) {
-    db.addProfile(age, city, url, userId)
-        .then(() => {
-            req.session.profileCreated = true;
-            res.redirect("/petition");
-        })
-        .catch((err) => {
-            console.log("error with addProfile()", err);
-            res.render("profile", {});
-        });
-    //     } else {
-    //         console.log("please enter a valid url starting with http(s)://");
-    //         res.render("profile", {
-    //             url: true,
-    //         });
-    //     }
-    // } else {
-    //     res.redirect("/petition");
-    // }
+    if (url) {
+        if (url.startsWith("http://") || url.startsWith("https://")) {
+            db.addProfile(age, city, url, userId)
+                .then(() => {
+                    req.session.profileCreated = true;
+                    res.redirect("/petition");
+                })
+                .catch((err) => {
+                    console.log("error with addProfile()", err);
+                    res.render("profile", {});
+                });
+        } else {
+            res.render("profile", {
+                url: true,
+            });
+        }
+    } else {
+        res.redirect("/petition");
+    }
 });
 
 app.get("/petition", (req, res) => {
@@ -342,6 +342,7 @@ app.get("/petition/signers/:city", (req, res) => {
 
 app.get("/profile/edit", (req, res) => {
     const { userId, profileCreated } = req.session;
+
     if (userId) {
         if (profileCreated) {
             db.getProfile(userId)
@@ -447,18 +448,14 @@ app.post("/profile/edit", (req, res) => {
             } else {
                 //belongs to if email is in use
                 res.render("edit", {
-                    text: "This email is unavailable",
-                    action: "Retry",
-                    link: "/profile/edit",
+                    email: true,
                 });
             }
         }); // closes db.getPassword()
     } else {
         //closes if (empty fields)
         res.render("edit", {
-            text: "Error updating",
-            action: "Retry",
-            link: "/profile/edit",
+            empty: true,
         });
     }
 });

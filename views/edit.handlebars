@@ -39,7 +39,13 @@
                 </div>
             </div>  
     </form>
-        {{!-- {{#if empty}}
-            <p style="color: tomato; margin-top:1%">Name, Surname and Email fields must be populated! </p>  
-        {{/if}}  --}}
+        {{#if empty}}
+            <p class="error"> Name, Surname and Email must be populated!</p>  
+        {{/if}}
+        {{#if url}}
+            <p class="error" style="">URL should begin with http(s)://...</p>  
+            {{/if}}
+        {{#if email}}
+            <p class="error"> Email is already taken, try another</p>  
+        {{/if}}
 </div>
