@@ -219,7 +219,17 @@ app.post("/profile", (req, res) => {
             });
         }
     } else {
-        res.redirect("/petition");
+        db.addProfile(age, city, url, userId)
+            .then(() => {
+                req.session.profileCreated = true;
+                res.redirect("/petition");
+            })
+            .catch((err) => {
+                console.log("error with addProfile()", err);
+                res.render("profile", {});
+            });
+
+        // res.redirect("/petition");
     }
 });
 
@@ -355,7 +365,7 @@ app.get("/profile/edit", (req, res) => {
                     console.log("error with getProfile() in GET /edit", err);
                 });
         } else {
-            res.redirect("/profile");
+            res.redirect("/profile/edit");
         }
     } else {
         res.redirect("/register");
@@ -385,7 +395,7 @@ app.post("/profile/edit", (req, res) => {
                                                 rows
                                             );
                                             res.render("edit", {
-                                                popup: true,
+                                                updateSuccess: true,
                                                 text:
                                                     "Profile successfully updated",
                                                 action: "▶ Continue",
@@ -434,7 +444,7 @@ app.post("/profile/edit", (req, res) => {
                                                         rows
                                                     );
                                                     res.render("edit", {
-                                                        popup: true,
+                                                        updateSuccess: true,
                                                         text:
                                                             "Profile successfully updated",
                                                         action: "▶ Continue",
@@ -496,14 +506,128 @@ app.post("/profile/edit", (req, res) => {
             });
         }
     } else {
-        console.log("no url added in POST /edit");
-        // res.redirect("/petition"); // url field empty; no validation required
-        res.render("edit", {
-            popup: true,
-            text: "Profile successfully updated",
-            action: "▶ Continue",
-            link: "/petition",
-        });
+        // console.log("no url added in POST /edit");
+        // // res.redirect("/petition"); // url field empty; no validation required
+        // res.render("edit", {
+        //     popup: true,
+        //     text: "Profile successfully updated",
+        //     action: "▶ Continue",
+        //     link: "/petition",
+        // });
+        if (firstname !== "" && surname !== "" && email !== "") {
+            db.getPassword(email).then(({ rows }) => {
+                if (rows.length === 0 || rows[0].email === retrievedEmail) {
+                    if (password == "") {
+                        db.updateUsersNoPw(firstname, surname, email, userId)
+                            .then(() => {
+                                db.updateProfiles(age, city, url, userId)
+                                    .then(({ rows }) => {
+                                        console.log(
+                                            "update to profiles table: ",
+                                            rows
+                                        );
+                                        res.render("edit", {
+                                            updateSuccess: true,
+                                            text:
+                                                "Profile successfully updated",
+                                            action: "▶ Continue",
+                                            link: "/petition",
+                                        });
+                                    })
+                                    .catch((err) => {
+                                        console.log(
+                                            "error in POST /edit with updateProfiles(): ",
+                                            err
+                                        );
+                                    });
+                            })
+                            .catch((err) => {
+                                console.log(
+                                    "error in POST /edit with updateUsersNoPw(): ",
+                                    err
+                                );
+                            });
+                    } else {
+                        // close if (password)
+                        hash(password)
+                            .then((hashedPw) => {
+                                console.log("hashedPw in /edit", hashedPw);
+                                db.updateUsers(
+                                    firstname,
+                                    surname,
+                                    email,
+                                    hashedPw,
+                                    userId
+                                )
+                                    .then(({ rows }) => {
+                                        console.log(
+                                            "update to users table (all cols): ",
+                                            rows
+                                        );
+                                        db.updateProfiles(
+                                            age,
+                                            city,
+                                            url,
+                                            userId
+                                        )
+                                            .then(({ rows }) => {
+                                                console.log(
+                                                    "update to profiles table: ",
+                                                    rows
+                                                );
+                                                res.render("edit", {
+                                                    updateSuccess: true,
+                                                    text:
+                                                        "Profile successfully updated",
+                                                    action: "▶ Continue",
+                                                    link: "/petition",
+                                                });
+                                            })
+                                            .catch((err) => {
+                                                console.log(
+                                                    "error in POST /edit with updateProfiles(): ",
+                                                    err
+                                                );
+                                            });
+                                    })
+                                    .catch((err) => {
+                                        console.log(
+                                            "error in POST /edit with updateUsers(): ",
+                                            err
+                                        );
+                                        res.render("edit", {
+                                            empty: true, // render error message properly on edit handlebar
+                                        });
+                                    });
+                            })
+                            .catch((err) => {
+                                console.log(
+                                    "error in POST /edit with hashedPw(): ",
+                                    err
+                                );
+                            });
+                    } //closes else (password)
+                } else {
+                    //belongs to if email is in use
+                    console.log("email already taken in POST /edit");
+                    res.render("edit", {
+                        popup: true,
+                        text: "Email is already taken, try another",
+                        action: "◀ Back to Profile",
+                        link: "/profile/edit",
+                    });
+                }
+            }); // closes db.getPassword()
+        } else {
+            //closes if (empty fields)
+            console.log("account fields empty in POST /edit");
+            res.render("edit", {
+                popup: true,
+                text: "Name, Surname and Email must be populated",
+                action: "◀ Back to Profile",
+                link: "/profile/edit",
+            });
+        }
     }
 });
 
