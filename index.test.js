@@ -65,9 +65,12 @@ test("GET /petition sends 302 to /signed when userId and signed cookies exists",
 
 ////////FAILS:  Users who are logged in and have signed the petition are redirected to the thank you page when they attempt submit a signature
 // test.only("POST /petition sends 302 to /signed when userId and signed cookies exists", () => {
+//     cookieSession.mockSessionOnce({
+//         userId: 3,
+//         signed: true,
+//     });
 //     return supertest(app)
 //         .post("/petition")
-//         .send("toDataURL")
 //         .then((res) => {
 //             expect(res.statusCode).toBe(302);
 //             expect(res.headers.location).toBe("/petition/signed");
