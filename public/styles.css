@@ -95,8 +95,8 @@ button:hover {
 }
 
 .hero-container {
-    margin-top: 2%;
-    width: 300px;
+    margin: 1% 0 1% 0;
+    width: 600px;
     height: 300px;
     box-shadow: 6px 6px 5px 1px rgba(158, 158, 162, 0.5);
 }
@@ -195,7 +195,7 @@ footer {
     margin: 0;
     font-size: large;
     color: green;
-    text-shadow: 3px 2px 2px rgba(0, 0, 0, 0.3);
+    text-shadow: 3px 3px 3px rgba(0, 0, 0, 0.3);
 }
 
 #update {
@@ -240,9 +240,7 @@ footer {
     margin-bottom: 4%;
     width: 53%;
     font-size: large;
-    color: green;
-    text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
-    /* padding: 2px 1em; */
+    /* text-shadow: 1px 1px 1px grey; */
 }
 
 .comrade-name {
@@ -266,7 +264,7 @@ footer {
 
 /* Register page */
 #register-container {
-    margin: 20%;
+    margin: 5%;
     font-size: larger;
 }
 
@@ -339,13 +337,7 @@ footer {
     box-shadow: 1px 1px 1px darkgrey;
 }
 
-/* 
-#firstname,
-#surname {
-    padding-bottom: 2%;
-    border-radius: 0px;
-    border: 1px #383838 solid;
-} */
+/* popup */
 
 .popup {
     display: flex;
@@ -369,9 +361,6 @@ footer {
 }
 
 #text {
-    /* font-size: large; */
-    /* padding: 0;
-    margin: 0; */
     color: 383838;
     text-shadow: 3px 2px 4px rgba(0, 0, 0, 0.3);
 }
@@ -379,12 +368,27 @@ footer {
     color: mediumblue;
     margin: 0;
     font-size: large;
-    /* color: green; */
     text-shadow: 3px 2px 3px rgba(0, 0, 0, 0.3);
 }
 
 #action:hover {
-    /* filter: grayscale(100%); */
-    /* cursor: pointer; */
     color: purple;
+}
+
+/* intro */
+.intro {
+    margin-top: 6%;
+    font-size: medium;
+    text-shadow: 3px 3px 3px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    border-bottom: 2px #383838 solid;
+}
+.outro {
+    /* margin-top: 5%; */
+    font-size: large;
+    text-shadow: 3px 3px 3px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    border-top: 2px #383838 solid;
+    margin: 0;
+    color: darkorchid;
 }
